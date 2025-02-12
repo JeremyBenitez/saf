@@ -112,9 +112,104 @@ def tiendasxmarca():
         rows = cursor.fetchall()
         data = [dict(zip(columns, row)) for row in rows]
         conexion.close()
+        unidades = []
+        for i in data:
+            unidades.append(i['Total_Transacciones'])
+        return jsonify(data, {"transacciones":sum(unidades)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+#nueva implmentacion
+@marcas_bp.route('/marcasdetalles',methods=['GET', 'POST'])
+def tiendasxmarcadetalles():
+    try:
+        
+        data = request.json
+        parametro_marca = f'%{data['marca']}%'
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        cursor.execute("sp_reportes_ventas_productos @FechaInicio = ?, @FechaFin = ? , @Filtro  = ? "
+                       ,(data['FechaInicio'],data['FechaFin'],parametro_marca))              
+        columns = [column[0] for column in cursor.description]
+        rows = cursor.fetchall()
+        data = [dict(zip(columns, row)) for row in rows]
+        conexion.close()
+        ventas = []
+        unidades = []
+        for suma_tienda in data:
+            ventas.append(suma_tienda['total_USD'])
+            unidades.append(suma_tienda['cantidad'])
+        total_usd = sum(ventas)
+        total_cantidades = sum(unidades)
+        return jsonify({"Total_USD":total_usd, "cantidades":total_cantidades})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+@marcas_bp.route('/marcasdetallesbs',methods=['GET', 'POST'])
+def marcasbs():
+    try:
+        
+        data = request.json
+        parametro_marca = f'%{data['marca']}%'
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        cursor.execute("sp_reportes_ventas_productos_VES @FechaInicio = ?, @FechaFin = ? , @Filtro  = ? "
+                       ,(data['FechaInicio'],data['FechaFin'],parametro_marca))              
+        columns = [column[0] for column in cursor.description]
+        rows = cursor.fetchall()
+        data = [dict(zip(columns, row)) for row in rows]
+        conexion.close()
+        total_bs = []
+   
+        for i in data:
+            total_bs.append(i['total'])
+  
+        suma_total_bs = sum(total_bs)
+
+
+        return jsonify({"Total_BS":suma_total_bs})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
+@marcas_bp.route('/marcasdetallesxtiendas',methods=['GET', 'POST'])
+def tiendasxmarcadetalle_tiendas():
+    try:
+        data = request.json
+        parametro_marca = f'%{data['marca']}%'
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        cursor.execute("sp_reportes_ventas_productos @FechaInicio = ?, @FechaFin = ? , @Filtro  = ? "
+                       ,(data['FechaInicio'],data['FechaFin'],parametro_marca))              
+        columns = [column[0] for column in cursor.description]
+        rows = cursor.fetchall()
+        data = [dict(zip(columns, row)) for row in rows]
+        conexion.close()  
         return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
+
+#//////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 
 
