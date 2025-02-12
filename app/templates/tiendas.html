@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %} - {{text}} {% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style_base.css') }}" />
+
+<div class="container-fluid py-4">
+  <div class="col-12 d-flex justify-content-between align-items-center">
+    <h1 class="display-5 fw-bold text-primary">Rendimiento de Tienda</h1>
+    <h3 class="display-5 fw-bold text-primary">{{text}}</h3>
+  </div>
+
+  <!-- Ventas Diarias -->
+  <div class="row mb-4 p-3" style="background-color: #e3f2fd;">
+    <div class="col-12">
+      <h2 class="fw-bold">Ventas Diarias:</h2>
+    </div>
+    <div class="col-lg-6">
+      <!-- Panel izquierdo con las ventas -->
+      <div class="left-panel">
+        <!-- Ventas Diarias - Fila 1 -->
+        <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+          <h5 class="text-center">Ventas USD:</h5>
+          <h5 id="ventaDiaUsd" class="mt-1">$ {{ "{:,.2f}".format(ventas_usd)}}</h5>
+        </div>
+        <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+          <h5 class="text-center">Ventas Cashea:</h5>
+          <h5 id="ventaDiaCashea" class="mt-1">$ {{ "{:,.2f}".format(ventas_csh)}}</h5>
+        </div>
+  
+        <!-- Ventas Diarias - Fila 2 -->
+        <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+          <h5 class="text-center">Ventas Bs:</h5>
+          <h5 id="ventaDiaBs" class="mt-1">Bs {{ "{:,.2f}".format(ventas_bs)}}</h5>
+        </div>
+        <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+          <h5 class="text-center">Ventas Efectivo:</h5>
+          <h5 id="ventaDiaEfectivo" class="mt-1">USD {{ "{:,.2f}".format(venta_efe)}}</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <!-- Gráfico de ventas diarias -->
+      <canvas id="dailySalesChart" height="110"></canvas>
+    </div>
+  </div> 
+
+ <!-- Ventas Semanales -->
+ <div class="row mb-4 p-3" style="background-color: #fff3e0;">
+  <div class="col-12">
+    <h2 class="fw-bold">Ventas Semanales:</h2>
+  </div>
+  <div class="col-lg-6">
+    <!-- Panel izquierdo con las ventas -->
+    <div class="left-panel">
+      <!-- Ventas Semanales - Fila 1 -->
+      <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+        <h5>Ventas USD:</h5>
+        <h5 id="ventaSemUsd" class="mt-1">$ {{ "{:,.2f}".format(0)}}</h5>
+      </div>
+      <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+        <h5>Ventas Cashea:</h5>
+        <h5 id="ventaSemCashea" class="mt-1">$ {{ "{:,.2f}".format(0)}}</h5>
+      </div>
+      
+      <!-- Ventas Semanales - Fila 2 -->
+      <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+        <h5>Ventas Bs:</h5>
+        <h5 id="ventaSemBs" class="mt-1">Bs. {{ "{:,.2f}".format(0)}}</h5>
+      </div>
+      <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+        <h5>Ventas Efectivo:</h5>
+        <h5 id="ventaSemEfectivo" class="mt-1">USD {{ "{:,.2f}".format(0)}}</h5>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <!-- Gráfico de ventas semanales -->
+    <canvas id="weeklySalesChart" height="110"></canvas>
+  </div>
+</div>
+
+  <!-- Ventas Mensuales -->
+  <div class="row mb-4 p-3" style="background-color: #ede7f6;">
+    <div class="col-12">
+      <h2 class="fw-bold">Ventas Mensuales:</h2>
+    </div>
+    <div class="col-lg-6">
+      <!-- Panel izquierdo con las ventas -->
+      <div class="left-panel">
+        <!-- Ventas Mensuales - Fila 1 -->
+        <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+          <h5>Ventas USD:</h5>
+          <h5 id="VentaMesUsd" class="mt-1">$ {{ "{:,.2f}".format(0)}}</h5>
+        </div>
+        <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+          <h5>Ventas Cashea:</h5>
+          <h5 id="ventaMesCashea" class="mt-1">$ {{ "{:,.2f}".format(0)}}</h5>
+        </div>
+        
+        <!-- Ventas Mensuales - Fila 2 -->
+        <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+          <h5>Ventas Bs:</h5>
+          <h5 id="ventaMesBs" class="mt-1">Bs. {{ "{:,.2f}".format(0)}}</h5>
+        </div>
+        <div class="d-flex justify-content-center flex-column align-items-center mb-2">
+          <h5>Ventas Efectivo:</h5>
+          <h5 id="ventaMesEfectivo" class="mt-1">USD {{ "{:,.2f}".format(0)}}</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <!-- Gráfico de ventas mensuales -->
+      <canvas id="monthlySalesChart" height="110"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Custom JS -->
+<script>
+  // Validar datos para evitar valores 'undefined' o 'None'
+  const salesData = {
+    dailySales: {{ daily_sales | tojson | safe }},
+    weeklySales: {{ weekly_sales | tojson | safe }},
+    monthlySales: {{ monthly_sales | tojson | safe }}
+  };
+</script>
+
+<script src="../static/Js/tiendas.js"></script>
+
+{% endblock %}s

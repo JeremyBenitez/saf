@@ -1,0 +1,265 @@
+/* Gradientes para las tarjetas */
+.bg-gradient-purple {
+  background: linear-gradient(45deg, #6f42c1, #6610f2);
+}
+
+.bg-gradient-blue {
+  background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+}
+
+.bg-gradient-green {
+  background: linear-gradient(45deg, #198754, #20c997);
+}
+
+/* Estilos generales */
+.card {
+  border: none;
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Estilos para los números en las tarjetas */
+.card h2 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Estilos para los íconos */
+.fas {
+  font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Animación para el ícono de actualización */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fa-sync-alt {
+  animation: spin 2s linear infinite;
+}
+
+/* Estilos para el contenedor principal */
+.container-fluid {
+  max-width: 1400px;
+}
+
+/* Estilos para los gráficos */
+canvas {
+  max-width: 100%;
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating-icon {
+  display: inline-block;
+  animation: rotating 2s linear infinite;
+  color: #0d6efd;
+}
+
+/* Estilos para el botón del menú */
+
+.menu-button .btn-link {
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-button .btn-link:hover {
+  background-color: #2a91ff;
+}
+
+/* Ajuste del contenedor principal para dar espacio al menú */
+.container-fluid {
+  padding-left: 80px;
+}
+
+/* Estilos para el menú lateral */
+.offcanvas {
+  width: 250px;
+}
+
+.list-group-item {
+  border: none;
+  padding: 12px 20px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(5px);
+}
+
+/* Estilos adicionales para el menú */
+.list-group-item i {
+  width: 20px;
+  text-align: center;
+  margin-right: 10px;
+}
+
+.list-group-item:hover i {
+  color: #0d6efd;
+}
+
+/* Responsive adjustments para el menú */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding-left: 15px;
+  }
+
+  .menu-button {
+    top: 10px;
+    left: 10px;
+  }
+}
+
+/* Estilos para las tarjetas de tiendas */
+.store-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.store-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+}
+
+.metric-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.performance-badge {
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.performance-badge.positive {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.performance-badge.negative {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* Estilos para el buscador y filtros */
+.input-group-text {
+  background-color: white;
+  border-right: none;
+}
+
+#searchTienda {
+  border-left: none;
+}
+
+#searchTienda:focus {
+  box-shadow: none;
+  border-color: #ced4da;
+}
+
+/* Animación para la carga de tarjetas */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ajustes para el submenú */
+#subMenuTiendas {
+  width: 250px; /* Cambiar el ancho del submenú */
+}
+/* Asegura que el submenú no se superponga al menú principal */
+.offcanvas-start {
+  left: 0;
+}
+.offcanvas {
+  z-index: 1050; /* Asegura que esté por debajo del menú principal */
+}
+.btn-back {
+  color: lightcoral; /* Color rojo claro */
+  border: none; /* Sin borde */
+  background: transparent; /* Fondo transparente */
+  padding: 0; /* Sin padding */
+  cursor: pointer; /* Cambia el cursor al pasar por encima */
+}
+
+.store-card {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.logout {
+  text-align: right; /* Alinea a la derecha */
+  margin-right: 20px; /* Opcional: Añade un margen derecho para separar del borde */
+}
+
+.logout a {
+  color: white; /* Color blanco */
+  text-transform: uppercase; /* Convierte el texto a mayúsculas */
+  text-decoration: none; /* Elimina subrayado */
+  font-weight: bold; /* Opcional: Hace el texto más grueso */
+}
+
+.logout a:hover {
+  text-decoration: underline; /* Opcional: Subrayado al pasar el ratón */
+}

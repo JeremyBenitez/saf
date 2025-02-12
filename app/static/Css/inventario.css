@@ -1,0 +1,23 @@
+        /* Contenedor que aplica el scroll */
+        .table-container {
+            width: 100%; /* Ajusta el ancho del contenedor */
+            max-height: 300px; /* Altura máxima del contenedor */
+            overflow-y: auto; /* Habilita el scroll vertical */
+            border: 1px solid #ccc; /* Agrega un borde opcional */
+        }
+
+        /* Estilo básico de la tabla */
+        table {
+            width: 100%; /* La tabla ocupa todo el ancho del contenedor */
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }

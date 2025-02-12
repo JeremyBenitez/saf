@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tendencias.css') }}" />
+
+<div class="container-fluid py-4">
+  <!-- Título principal "Tendencias de Ventas" -->
+  <div class="row d-flex align-items-center">
+    <div class="col-md-5 mb-2">
+      <h2 class="fw-bold">Tendencias de Ventas</h2>
+    </div>
+    <form action="" method="post" class="col-md-7 mb-3 d-flex justify-content-end">
+      <div class="d-flex flex-column flex-md-row align-items-md-center">
+        <div class="mb-2">
+          <label for="startDate" class="form-label">Filtrar por fechas:&nbsp;&nbsp;</label>
+        </div>
+        <div class="d-flex flex-column flex-md-row gap-2">
+          <input type="date" class="form-control" id="startDate" name="startDate" value="{{ start_date }}">
+          <input type="date" class="form-control" id="endDate" name="endDate" value="{{ end_date }}">
+          <button class="btn btn-primary">Buscar</button>
+        </div>
+      </div>
+    </form>
+  </div> 
+
+    <div class="departments-container">
+      <!-- Título de los departamentos -->
+      <div class="department-title">Departamento Más Vendido:</div>
+      <div class="department-title">Departamento Menos Vendido:</div>
+    </div>
+
+  <!-- Contenedor de las tarjetas de departamentos -->
+  <div class="departments-container">
+    <!-- Departamento Más Vendido -->
+    <div class="department-card velde">
+      <div id="bestDepartmentDetails">
+        <h2 id="bestDepartmentName">{{ best_department }}</h2>
+        <p><strong>Ventas Totales en USD: </strong>{{ "{:,.2f}".format(n_ventas_best)}}</p>
+        <p><strong>Unidades Vendidas: </strong>{{n_transt_best|int}}</p>
+      </div>
+    </div>
+    
+    <!-- Departamento Menos Vendido -->
+    <div class="department-card rojo">
+      <div id="worstDepartmentDetails">
+        <h2 id="worstDepartmentName">{{ worst_department }}</h2>
+        <p><strong>Ventas Totales en USD: </strong>{{ "{:,.2f}".format(n_ventas_worst)}}</p>
+        <p><strong>Unidades Vendidas: </strong>{{n_transt_worst|int}}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección del gráfico -->
+  <div class="row g-4 mb-4" style="justify-content: center;">
+    <div class="col-md-10">
+      <canvas id="salesChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>const data_grafico = {{data_grafico|tojson|safe}};</script>
+
+<!-- Data y Graficos -->
+
+
+<script>
+  const hoy = new Date();
+  const anio = hoy.getFullYear();
+  const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoy.getDate()).padStart(2, '0');
+  const fechaHoy = `${anio}-${mes}-${dia}`;
+  
+  // Asignar la fecha de hoy como el valor máximo
+  document.getElementById("startDate").max = fechaHoy;
+  document.getElementById("endDate").max = fechaHoy;
+
+
+
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Aquí va el código del gráfico
+    // Datos de prueba para el gráfico
+  //let data_grafico = data_grafico;
+
+const labels = [
+  'Ropa', 'Hogar', 'Calzado', 'Juguetes', 'Cuidado Personal',
+  'Comida', 'Ferreteria', 'Belleza', 'Accesorios', 'Automotriz',
+  'Productos de Limpieza', 'Oficina', 'Festejo', 'Deporte'
+];
+
+// Combina etiquetas y valores
+const combinedData = labels.map((label, index) => ({
+  label: label,
+  value: data_grafico[index]
+}));
+
+// Ordena por valor descendente
+combinedData.sort((a, b) => b.value - a.value);
+
+// Extrae las etiquetas y valores ordenados
+const sortedLabels = combinedData.map(item => item.label);
+const sortedData = combinedData.map(item => item.value);
+
+// Configuración del gráfico
+const config = {
+  type: 'bar',
+  data: {
+    labels: sortedLabels,
+    datasets: [{
+      label: 'Ventas por Categoría $',
+      data: sortedData,
+      backgroundColor: '#003366', // Color de fondo
+      borderColor: '#003366', // Color de borde
+      borderWidth: 1 
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+              stacked: true,
+              ticks: {
+                maxRotation: 45,
+                minRotation: 20,
+                font: {
+                  size: function () {
+                    // Obtener el ancho de la pantalla
+                    const chartWidth = window.innerWidth; 
+                    return chartWidth > 450 ? 12 : 7; // Ajustar a 10px si es mayor a 360px, sino 7px
+                  },
+                },
+              },
+            },
+      y: {
+        beginAtZero: true,
+        suggestedMin: 0,
+        suggestedMax: 25
+      }
+    }
+  }
+};
+
+// Inicializa el gráfico
+const chartContext = document.getElementById('salesChart').getContext('2d');
+const salesChart = new Chart(chartContext, config);
+  });
+</script>
+
+
+{% endblock %}

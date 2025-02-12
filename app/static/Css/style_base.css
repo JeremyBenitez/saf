@@ -1,0 +1,129 @@
+/* Ajustes para el submenú */
+#subMenuTiendas {
+    width: 250px; /* Cambiar el ancho del submenú */
+}
+/* Asegura que el submenú no se superponga al menú principal */
+.offcanvas-start {
+    left: 0;
+}
+.offcanvas {
+    z-index: 1050; /* Asegura que esté por debajo del menú principal */
+}
+.btn-back {
+    color: lightcoral; /* Color rojo claro */
+    border: none; /* Sin borde */
+    background: transparent; /* Fondo transparente */
+    padding: 0; /* Sin padding */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+}
+
+h2{
+    margin-bottom: 10px;
+  }
+
+  /* Estilo para resaltar el lado izquierdo con líneas cruzadas */
+  .left-panel {
+    background-color: #f0f4f8; /* Fondo claro */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para resaltar */
+    position: relative; /* Necesario para posicionar las líneas */
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas */
+    grid-template-rows: auto auto; /* Dos filas */
+    gap: 20px; /* Espacio entre las filas y columnas */
+    align-items: center; /* Centra los elementos verticalmente */
+    height: 220px; /* Altura fija para la sección */
+  }
+
+  /* Estilo de los textos dentro de las filas */
+  .left-panel h5 {
+    margin-bottom: 10px;
+  }
+
+  /* Asegurarse de que las filas estén alineadas correctamente */
+  .left-panel .row {
+    margin-bottom: 15px;
+  }
+
+  /* Asegura que las celdas de las filas estén alineadas */
+  .left-panel .col-6 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Espaciado entre las celdas */
+  .left-panel .col-6 h5 {
+    margin: 5px 0;
+  }
+
+
+
+/* Ajustes generales para pantallas pequeñas */
+@media (max-width: 768px) {
+  /* Ajustar tamaño de la fuente en títulos (h2) */
+  h2, h1, h3 {
+    font-size: 1.5em; /* Ajustar el tamaño del título */
+  }
+
+  /* Ajustar tamaño de las cifras (h5) */
+  h5 {
+    font-size: 1.2em;  /* Ajustar tamaño para cifras */
+  }
+
+  /* Asegurar que las columnas ocupen todo el ancho en pantallas pequeñas */
+  .col-12, .col-lg-6 {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Ajustar el espaciado entre las filas */
+  .d-flex {
+    margin-bottom: 0.5em !important;
+  }
+
+  /* Asegurar que los gráficos ocupen todo el ancho */
+  #dailySalesChart, #weeklySalesChart, #monthlySalesChart {
+    width: 100% !important;
+    height: auto !important; /* Asegura que el gráfico se ajuste al tamaño */
+  }
+
+  /* Ajustar el padding de la fila para evitar desbordamiento */
+  .row {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Ajustar los márgenes internos de la columna */
+  .left-panel {
+    padding: 0 !important;  /* Eliminar padding adicional */
+  }
+
+  /* Evitar que las cifras se sobrepasen hacia abajo en contenedores */
+  .d-flex.justify-content-center {
+    text-align: center !important;
+  }
+}
+
+/* Ajustes para pantallas medianas (entre 768px y 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  h2, h1, h3 {
+    font-size: 1.8em;  /* Ajustar tamaño para pantallas medianas */
+  }
+
+  h5 {
+    font-size: 1.3em;  /* Ajustar tamaño en pantallas medianas */
+  }
+
+  /* Ajustar el espaciado entre las filas */
+  .d-flex {
+    margin-bottom: 1em;
+  }
+
+  /* Asegurar que los gráficos ocupen todo el ancho disponible */
+  #dailySalesChart, #weeklySalesChart, #monthlySalesChart {
+    width: 100% !important;
+    height: auto !important; /* Asegura que el gráfico se ajuste */
+  }
+}

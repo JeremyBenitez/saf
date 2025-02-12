@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .table-container {
+    position: relative;
+    max-height: 500px; /* Puedes ajustarlo si es necesario */
+    overflow-y: auto;
+  }
+  .thead-fixed {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10; /* Asegúrate de que el z-index sea lo suficientemente alto */
+  }  
+  #inventoryTable tr {
+    height: 50px; /* Ajusta este valor al tamaño deseado */
+    border-bottom: 1px solid #ddd; /* Línea para separar filas */
+  }
+  #inventoryTable td, #inventoryTable th {
+    padding: 10px; /* Ajusta el espacio interior */
+    text-align: left;
+    vertical-align: middle;
+  }  
+  /* Estilo para el texto de la tabla */
+  table {
+    font-size: 13px; /* Ajusta el tamaño de la fuente */
+  }
+</style>
+
+<div class="container-fluid py-4">
+  <!-- Fila superior con 4 divs -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card text-center">
+        <div class="card-body" style="margin-bottom: 1px;">
+            <div class="row">
+              <!-- Seleccionador de Tienda -->
+              <div class="col-md-3 mb-3">
+                <!-- Para Tienda -->
+                <select class="form-select" id="depositSelect" name="store">
+                  <option value="">Selecione una Tienda</option>
+                  {%for tiendas in bases%}
+                  <option value="{{tiendas[0][0]}}" data-extra="{{tiendas[2]}}"> {{tiendas[1]}} </option>
+                  {%endfor%}
+                </select>
+              </div>
+
+              <!-- Seleccionador de Departamento -->
+              <div class="col-md-3 mb-3">
+                <select   class="form-select" name="" id="departamentSelec">
+                  <option value="">Selecione un departamento </option>
+                  {%for departamentos in deptos%}
+
+                    <option value="{{departamentos[0]}}">{{departamentos[1]}} </option>
+
+                  {%endfor%}
+                </select>
+              </div>
+
+              <!-- Seleccionador de una fecha -->
+              <div class="col-md-3 mb-3">
+                <input type="date" class="form-control" id="fecha" name="fecha" value=" ">
+              </div>
+
+              <!-- Botón de Buscar -->
+              <div class="col-md-2 d-flex align-items-end mb-3">
+                <button id="btn-buscar" class="btn btn-primary w-100">BUSCAR</button>
+              </div>
+
+              <!-- Seleccionador de Grupos (Inicialmente Oculto) -->
+              <div class="row">
+                <div class="col-md-12" id="groupContainer" >
+
+                  <div style="display: grid; place-items:center; display: None;" id="div-grupo">
+                    <p>Filtro por grupo</p>
+                  <select class="form-select" id="grupoSelect" name="group" style="width: auto;" onchange="filterTable2()">
+                    <option value="" >Seleccione un grupo</option>
+                  </select>   
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Buscador para la tabla -->
+    <div class="row mb-3 justify-content-center">
+      <div class="col-md-8">
+        <div class="input-group">
+          <span class="input-group-text"><i class="fa fa-search"></i></span>
+          <input type="text" class="form-control" id="searchInput" onkeyup="filterTable()" placeholder="Buscar por nombre o codigo de articulo">
+        </div>
+      </div>
+    </div>
+    
+  <!-- Tablas -->
+  <div class="row">
+    <!-- Contenedor principal -->
+    <div class="col-lg-12">
+      <!-- Tabla -->
+      <div class="table-container" style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-bordered" id="inventoryTable">
+          <thead class="thead-fixed">
+            <tr align="center">
+              <th>Depósito de Tienda</th>
+              <th>Código de Artículo</th>
+              <th>Nombre de Artículo</th>
+              <th onclick="sortTable(3)" style="cursor: pointer;">Stock Actual <i class="fa fa-sort"></i></th>
+              <th>Ventas 30 Días</th>
+              <th>Ventas 60 Días</th>
+              <th onclick="sortTable(6)" style="cursor: pointer;">Ventas 90 Días <i class="fa fa-sort"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td></td>
+              
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script src="../static/Js/inventario.js"></script>
+
+{% endblock %}
