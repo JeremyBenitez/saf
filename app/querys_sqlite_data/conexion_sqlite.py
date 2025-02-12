@@ -7,7 +7,7 @@ fecha_hace_6Day = fecha_diaria - timedelta(days=6)
 
 
 def consulta_ventas(fecha_init,fecha_end):
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BDTiendas.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BDTiendas.db")
     pointer = conexion.cursor()
     pointer.execute("""
                     SELECT 
@@ -56,7 +56,7 @@ WHERE FECHA BETWEEN ? AND ?;
 class index:
 
     def valores(self, tabla):
-        self.conexion = sqlite3.connect(r'C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BDTiendas.db')
+        self.conexion = sqlite3.connect(r'C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BDTiendas.db')
         pointer = self.conexion.cursor()
         pointer.execute(f"SELECT V_USD , n_trasacciones FROM {tabla} ")
         self.data = pointer.fetchall()
@@ -64,7 +64,7 @@ class index:
         return  self.data
     
     def tiendas(self, tabla):
-        self.conexion = sqlite3.connect(r'C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BDTiendas.db')
+        self.conexion = sqlite3.connect(r'C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BDTiendas.db')
         pointer = self.conexion.cursor()
         pointer.execute(f"SELECT * FROM {tabla} ")
         self.data = pointer.fetchall()
@@ -72,7 +72,7 @@ class index:
         return  self.data
     
     def tienda_times(self, tabla,fi,fo):
-        self.conexion = sqlite3.connect(r'C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BDTiendas.db')
+        self.conexion = sqlite3.connect(r'C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BDTiendas.db')
         pointer = self.conexion.cursor()
         pointer.execute(f"SELECT * FROM {tabla} WHERE FECHA BETWEEN  ? AND  ?",(fi, fo))
         colums = [colum[0] for colum in pointer.description]
@@ -88,7 +88,7 @@ print(valor)
 
 
 def consulta(tienda):
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute("SELECT * FROM ventas_tienda WHERE TIENDA = ?",(tienda,))
     data = pointer.fetchall()
@@ -97,7 +97,7 @@ def consulta(tienda):
 
 
 def consulta_anterior(tienda,tabla):
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute(f"SELECT V_USD FROM {tabla} WHERE TIENDA = ?",(tienda,))
     data = pointer.fetchall()
@@ -106,7 +106,7 @@ def consulta_anterior(tienda,tabla):
 
 
 def consulta_fechas(columna):
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute(f"SELECT {columna} FROM fechas")
     data = pointer.fetchall()
@@ -114,7 +114,7 @@ def consulta_fechas(columna):
     return data[0][0]
 
 def consulta_semanal(tienda,tabla):
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute(f"SELECT * FROM {tabla} WHERE TIENDA = ?",(tienda,))
     data = pointer.fetchall()
@@ -126,7 +126,7 @@ def consulta_semanal(tienda,tabla):
 
 
 def consulta_mensual(tienda,mes):
-        conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+        conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
         pointer = conexion.cursor()
         pointer.execute(f"SELECT * FROM ventas_mensuales WHERE TIENDA = ? AND MES = ?",(tienda,mes))
         data = pointer.fetchall()
@@ -137,7 +137,7 @@ def consulta_mensual(tienda,mes):
 
 
 def consulta_dpto_ventas():
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute("SELECT * FROM ventas_departamentos")
     data = pointer.fetchall()
@@ -158,7 +158,7 @@ m11 = consulta_mensual('Baralt','11')
 
 
 def prueba():
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute("SELECT V_USD FROM ventas_tienda")
     data = pointer.fetchall()
@@ -166,7 +166,7 @@ def prueba():
     return data
 
 def grafico_trans():
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute("SELECT N_TRANSACCIONES FROM ventas_tienda")
     data = pointer.fetchall()
@@ -175,7 +175,7 @@ def grafico_trans():
 
 
 def users(username):
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute(f"SELECT * FROM USUARIOS WHERE username = ?",(username,))
     data = pointer.fetchall()
@@ -185,7 +185,7 @@ def users(username):
 
 
 def consulta_fechas_prueba():
-    conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+    conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
     pointer = conexion.cursor()
     pointer.execute(f"SELECT * FROM fechas")
     data = pointer.fetchall()
@@ -243,7 +243,7 @@ class BaseDatos:
         return resultados
 
 # Uso del código
-db = BaseDatos(r'C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BDTiendas.db')
+db = BaseDatos(r'C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BDTiendas.db')
 resultados = db.consultar_por_semana("Kapitana", 2025)
 
 for semana, datos in resultados.items():

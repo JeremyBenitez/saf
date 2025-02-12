@@ -26,7 +26,7 @@ def get_db_connection():
 class cementerio:
   
     def ventas_cementerio(self,fi,fo):
-        self.coneccion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BBDD-Cementerio.db")
+        self.coneccion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BBDD-Cementerio.db")
         self.cursor = self.coneccion.cursor()        
         self.cursor.execute("""SELECT 
                 SUM(V_USD) AS total_usd,

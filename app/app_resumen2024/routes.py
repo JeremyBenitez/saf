@@ -16,7 +16,7 @@ def add_cors_headers(response):
 def ventas():
     try:
         data = request.json
-        conetion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+        conetion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
         cursor = conetion.cursor()
         cursor.execute("SELECT V_USD, MES FROM ventas_mensuales_2024 WHERE TIENDA = ?",(data['tienda'],))
         columns = [column[0] for column in cursor.description]
@@ -33,7 +33,7 @@ def ventas():
 def ventas_tiendas(mes):
     try:
         data = request.json
-        conetion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+        conetion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
         cursor = conetion.cursor()
         cursor.execute("SELECT sum(V_USD) FROM ventas_mensuales_2024 where mes = ? ",(mes,))
         columns = [column[0] for column in cursor.description]
@@ -51,7 +51,7 @@ def ventas_tiendas(mes):
 def ventas_tiendas_tioi(mes):
     try:
         data = request.json
-        conetion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+        conetion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
         cursor = conetion.cursor()
         cursor.execute("""
                     SELECT SUM(V_USD) 
@@ -71,7 +71,7 @@ def ventas_tiendas_tioi(mes):
 def ventas_tiendas_tioii(mes):
     try:
         data = request.json
-        conetion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+        conetion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
         cursor = conetion.cursor()
         cursor.execute("""
                     SELECT SUM(V_USD) 
@@ -90,7 +90,7 @@ def ventas_tiendas_tioii(mes):
 def ventas_tiendas_tioiv(mes):
     try:
         data = request.json
-        conetion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+        conetion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
         cursor = conetion.cursor()
         cursor.execute("""
                     SELECT SUM(V_USD) 
@@ -111,7 +111,7 @@ def ventas_tiendas_tioiv(mes):
 @app_resumen.route('/') 
 def index():
     def usd():
-        conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+        conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
         cursor = conexion.cursor()
         cursor.execute("SELECT SUM(V_USD) FROM ventas_mensuales_2024")
         data = cursor.fetchone()
@@ -120,7 +120,7 @@ def index():
     data = usd()
     
     def bs():
-        conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db")
+        conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db")
         cursor = conexion.cursor()
         cursor.execute("SELECT SUM(V_BS) FROM ventas_mensuales_2024")
         data = cursor.fetchone()

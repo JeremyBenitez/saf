@@ -211,7 +211,7 @@ def apigeneral(tienda):
 def usdxTiendas(tienda):
     try:
         data = request.json
-        conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BDTiendas.db")
+        conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BDTiendas.db")
         pointer = conexion.cursor()
         pointer.execute(f"""
                         SELECT 
@@ -264,7 +264,7 @@ def efectividadPos():
 def consulta_sp():
     try:
         data = request.json
-        conetion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BD2024.db")
+        conetion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BD2024.db")
         cursor = conetion.cursor()
         
         cursor.execute("""
@@ -320,7 +320,7 @@ WHERE FECHA BETWEEN ? AND ?;""",(data['fecha_ini'],data['fecha_fin']))
 def usdxTiendas2024(tabla):
     try:
         data = request.json
-        conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BD2024.db")
+        conexion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BD2024.db")
         pointer = conexion.cursor()
         pointer.execute(f"""
                         SELECT 

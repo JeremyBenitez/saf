@@ -45,7 +45,7 @@ def consulta_table_cashea():
 class index:
 
     def valores(self, tabla):
-        self.conexion = sqlite3.connect(r'C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BDTiendas.db')
+        self.conexion = sqlite3.connect(r'C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BDTiendas.db')
         pointer = self.conexion.cursor()
         pointer.execute(f"SELECT * FROM {tabla} ")
         colums = [colum[0] for colum in pointer.description]
