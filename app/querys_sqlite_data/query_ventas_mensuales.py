@@ -1,30 +1,15 @@
 import pyodbc
 import sqlite3
+from pathlib import Path
 
 
-def get_db_connection():
-    """Crear conexión a la base de datos"""
-    conn_str = (
-        "DRIVER={SQL Server};"
-        "SERVER=ELTIO-CENTRAL;"
-        "DATABASE=VAD10;"
-        "UID=sa;"
-        "PASSWORD=;"
-        "Trusted_Connection=no;"
-    )
-    return pyodbc.connect(conn_str)
 
+base_dir  = Path().resolve()
+db_path = base_dir / "BBDDs" / "BDTiendas.db"
 
-"""class meses:
-    def consulta_table_ventas(self, mes):
-            conection = get_db_connection()
-            pointer = conection.cursor()
-            pointer.execute("SELECT * FROM ResumenMensualVentas WHERE Mes = ?",(mes,))
-            data = pointer.fetchall()
-            conection.close()
-            return data
-"""
-
+def get_db():
+    conexion = sqlite3.connect(str(db_path))
+    return conexion
 
 
 
@@ -33,7 +18,7 @@ class Meses:
         self.tienda = tienda
     
     def consulta(self,fi, fo,):
-        conection = sqlite3.connect('BDTiendas.db')
+        conection = get_db()
         pointer = conection.cursor()
         pointer.execute(f"""
                         SELECT 
@@ -51,3 +36,5 @@ class Meses:
         data = pointer.fetchall()
         conection.close()
         return data
+
+
