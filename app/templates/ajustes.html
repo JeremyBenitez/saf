@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ajustes.css') }}" />
+<body>
+
+<div class="container mt-2">
+    <!-- Encabezado -->
+    <div class="text-center border-bottom pb-1 mb-3">
+        <h3>Ajustes de Inventario</h3>
+    </div>
+
+    <!-- search section start  -->
+    <section id="search">
+        <div class="container search-block p-3 row mx-auto justify-content-center text-center">
+
+            <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
+                <label for="vehicle" class="label-style text-capitalize form-label">Tipo de Ajuste</label>
+                <div class="input-group date ">
+                    <!-- <input type="text" class="form-control p-3 " id="vehicle" placeholder="Select Car Group" /> -->
+                    <select class="form-select form-control p-3" id="vehicle" aria-label="Default select example"
+                        style="background-image: none;">
+                        <option selected>Todos</option>
+                        <option value="1">Salidas sin Efecto</option>
+                        <option value="2">Mercancia Dañada</option>
+                        <option value="3">Mercancia Vencida</option>
+                        <option value="4">Traslados</option>
+                        <option value="5">Cambio de Mercancia</option>
+                    </select>
+                    <span class="search-icon-position position-absolute p-3 ">
+                        <iconify-icon class="search-icons" icon="nimbus:arrows-horizontal"></iconify-icon>
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
+                <label for="location" class="label-style text-capitalize form-label">Tiendas</label>
+                <div class="input-group date">
+                    <!-- <input type="text" class="form-control p-3 " id="vehicle" placeholder="Select Car Group" /> -->
+                    <select class="form-select form-control p-3" id="vehicle" aria-label="Default select example"
+                        style="background-image: none;">
+                        <option selected>Todas</option>
+                        <option value="1">Kapitana</option>
+                        <option value="2">Catia</option>
+                        <option value="3">Cruz Verde</option>
+                        <option value="4">Propatria</option>
+                        <option value="5">Baralt</option>
+                        <option value="5">Maturin</option>
+                        <option value="6">Cabimas</option>
+                        <option value="7">Guanare</option>
+                        <option value="8">Guacara</option>
+                        <option value="9">Cabudare</option>
+                        <option value="10">Cagua</option>
+                        <option value="11">Valencia</option>
+                        <option value="12">Babilon</option>
+                        <option value="13">Valera</option>
+                        <option value="14">Upata</option>
+                    </select>
+                    <span class="search-icon-position position-absolute p-3 ">
+                        <iconify-icon class="search-icons" icon="ic:baseline-add-business"></iconify-icon>
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
+                <label for="pick-up-date" class="label-style text-capitalize form-label">Desde: </label>
+                <div class="input-group date" id="datepicker1">
+                    <input type="date" class="form-control p-3" id="initial-date" />
+
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
+                <label for="return-date" class="label-style text-capitalize form-label">Hasta: </label>
+                <div class="input-group date" id="datepicker2">
+                    <input type="date" class="form-control p-3" id="return-date" />
+
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4" style="margin-top: 0%;">
+                <button class="btn btn-primary b" type="button">BUSCAR</button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- cartas de Informacion -->
+    <section class="help-featured-section theme-section">
+    <div class="container">
+        <div class="text-center border-bottom pb-1 mb-3">
+            <h4>Resultados:</h4>
+        </div>
+        <div  class="row align-content-stretch">
+            <div class="item col-12 col-md-6 col-lg-3 py-4 p-md-4">
+                <div class="item-inner shadow rounded-4 p-4">
+                    <a class="item-link" href="help-article.html">
+                        <h3 class="item-heading"><div class="help-article-icon-holder mb-2"></div>Onboarding 101: Getting Started with Lorem Ipsum</h3>
+                        <div class="item-desc">
+                            <span class="rate-icon me-2"><i class="fa-solid fa-thumbs-up"></i></span> 56 people found this article helpful
+                        </div><!--//item-meta-->
+                    </a>
+                </div><!--//item-inner-->
+            </div><!--//item-->
+            <div class="item col-12 col-md-6 col-lg-3 py-4 p-md-4">
+                <div class="item-inner shadow rounded-4 p-4">
+                    <a class="item-link" href="help-article.html">
+                        <h3 class="item-heading"><div class="help-article-icon-holder mb-2"></div>Navigating the Dashboard: Key Features Explained</h3>
+                        <div class="item-desc">
+                            <span class="rate-icon me-2"><i class="fa-solid fa-thumbs-up"></i></span>25 people found this article helpful
+                        </div><!--//item-meta-->
+                    </a>
+                </div><!--//item-inner-->
+            </div><!--//item-->
+            <div class="item col-12 col-md-6 col-lg-3 py-4 p-md-4">
+                <div class="item-inner shadow rounded-4 p-4">
+                    <a class="item-link" href="help-article.html">
+                        <h3 class="item-heading"><div class="help-article-icon-holder mb-2"></div>Integrating Lorem Ipsum with Other Software</h3>
+                        <div class="item-desc">
+                            <span class="rate-icon me-2"><i class="fa-solid fa-thumbs-up"></i></span> 23 people found this article helpful
+                        </div><!--//item-meta-->
+                    </a>
+                </div><!--//item-inner-->
+            </div><!--//item-->
+            <div class="item col-12 col-md-6 col-lg-3 py-4 p-md-4">
+                <div class="item-inner shadow rounded-4 p-4">
+                    <a class="item-link" href="help-article.html">
+                        <h3 class="item-heading"><div class="help-article-icon-holder mb-2"></div>Troubleshooting Common Issues in</h3>
+                        <div class="item-desc">
+                            <span class="rate-icon me-2"><i class="fa-solid fa-thumbs-up"></i></span> 19 people found this article helpful
+                        </div><!--//item-meta-->
+                    </a>
+                </div><!--//item-inner-->
+            </div><!--//item-->
+            <div class="item col-12 col-md-6 col-lg-3 py-4 p-md-4">
+                <div class="item-inner shadow rounded-4 p-4">
+                    <a class="item-link" href="help-article.html">
+                        <h3 class="item-heading"><div class="help-article-icon-holder mb-2"></div>Troubleshooting Common Issues in</h3>
+                        <div class="item-desc">
+                            <span class="rate-icon me-2"><i class="fa-solid fa-thumbs-up"></i></span> 19 people found this article helpful
+                        </div><!--//item-meta-->
+                    </a>
+                </div><!--//item-inner-->
+            </div><!--//item-->
+            </div><!--//row-->
+        </div><!--//help-featured-articles-section-->
+    </div><!--//Container-->
+	</section><!--//help-featured-section-->
+
+</div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.7/dist/iconify-icon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    
+<script>
+    
+
+</script>
+
+</body>
+</html>
+
+{% endblock %}

@@ -1,0 +1,160 @@
+.container {
+    --bs-gutter-x: 1.5rem;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+    margin-right: auto;
+    margin-left: auto;
+}
+section {
+    display: block;
+    width: 100%;
+}   
+.theme-section {
+    padding-top: 2rem;
+}
+h3{
+    font-size: 2rem;
+    text-transform: capitalize;
+    font-family: var(--heading-font);
+    font-weight: 500;
+    color: var(--dark-color);
+}
+.b{
+    letter-spacing: 0.1em;
+    transition: 0.3s ease-in;
+    background-color: #2705be;
+    font-weight: bold;
+}
+.search-block {
+    background: #FFFFFF;
+    border: 1px solid #E0E0E0; /* Un color más notorio para el borde */
+    box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.15); /* Más opacidad y menos dispersión */
+    border-radius: 9px;
+    left: 0;
+    right: 0;
+}
+iconify-icon.search-icons {
+    color: #B8B8B8;
+    font-size: 20px;
+}
+.label-style {
+    color: var(--body-text-color);
+}
+.input-group-text {
+    border: none;
+    background: transparent;
+}
+.form-control {
+    border: 1px solid #E1E1E1;
+    border-radius: 4px !important;
+    color: var(--body-text-color);
+}
+.form-control:focus {
+    border-color: var(--light-text-color);
+    box-shadow: none;
+    color: var(--body-text-color);
+}
+.search-icon-position {
+    right: 0;
+}
+.help-featured-section .item .item-link {
+    text-decoration: none;
+}
+.help-featured-section .item .item-link:hover .item-heading {
+    color: #5236CB;
+}
+.help-featured-section .item .item-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #293647;
+    line-height: 1.4;
+}
+.help-featured-section .item .item-desc {
+    font-size: 0.875rem;
+    color: #4e6788;
+}
+.help-featured-section .item-inner {
+    height: 100%;
+    width: 220px;
+}
+.help-featured-section .item-inner:hover {
+    transition: all 0.4s ease-in-out;
+    box-shadow: var(--bs-box-shadow-lg) !important;
+}
+@media only screen and (max-width: 992px) {
+    .search-block {
+        position: static;
+        margin-top: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .help-featured-section .item-inner:hover {
+        transition: none;   
+    }
+}
+@media (max-width: 767.98px) {
+        .theme-section {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+    @media only screen and (max-width: 768px) {
+        h3, .h3 {
+        font-size: 1.4rem;
+        }
+    }
+}
+/* Espaciado entre los filtros de búsqueda */
+#search {
+    padding: 1rem 0; /* Reduce el espacio vertical del section */
+}
+.search-block {
+    padding: 1rem; /* Reduce el padding interno */
+    max-width: 90%; /* Ajusta el ancho si es necesario */
+}
+.form-control, .form-select {
+    padding: 0.5rem !important; /* Reduce el tamaño de los inputs y selects */
+    font-size: 0.9rem; /* Opcional: Reduce el tamaño de la fuente */
+}
+.search-block .col-12 {
+    margin-bottom: 10px; /* Reduce el espacio entre los elementos */
+}
+.btn-primary {
+    padding: 0.5rem 1rem; /* Reduce el tamaño del botón */
+    font-size: 0.9rem; /* Ajusta el tamaño del texto del botón */
+}
+/* Ajuste para las cartas de resultados */
+.help-featured-section .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+/* Configuración de las tarjetas para que sean 5 por fila */
+.help-featured-section .item {
+    flex: 1 1 calc(20% - 20px); /* 5 columnas con espacio entre ellas */
+    max-width: calc(20% - 20px);
+}
+/* Para hacerlas responsivas en pantallas más pequeñas */
+@media (max-width: 1200px) {
+    .help-featured-section .item {
+        flex: 1 1 calc(33.33% - 20px); /* 3 por fila en pantallas medianas */
+        max-width: calc(33.33% - 20px);
+    }
+}
+
+@media (max-width: 992px) {
+    .help-featured-section .item {
+        flex: 1 1 calc(50% - 20px); /* 2 por fila en pantallas pequeñas */
+        max-width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .help-featured-section .item {
+        flex: 1 1 100%; /* 1 por fila en móviles */
+        max-width: 100%;
+    }
+}

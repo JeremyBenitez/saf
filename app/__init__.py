@@ -14,6 +14,8 @@ def create_app():
     from .inventario.routes import inventario_bp
     from .appi_create.routes import appi
     from .app_resumen2024.routes import app_resumen
+    from .app_ajustes.routes import app_ajustes
+    from .app_reposicion.routes import app_reposicion
     
     app.register_blueprint(loggin_bp, url_prefix='/')
     app.register_blueprint(index_bp, url_prefix='/index')
@@ -24,4 +26,6 @@ def create_app():
     app.register_blueprint(inventario_bp, url_prefix='/inventario')
     app.register_blueprint(appi, url_prefix='/crear')
     app.register_blueprint(app_resumen, url_prefix='/2024')
+    app.register_blueprint(app_ajustes, url_prefix='/ajustes')
+    app.register_blueprint(app_reposicion, url_prefix='/reposicion')
     return app
