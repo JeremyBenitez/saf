@@ -2,6 +2,8 @@ import time
 from datetime import datetime, timedelta
 import sqlite3
 import pyodbc
+from pathlib import Path
+
 
 fecha = datetime.now()
 fecha_diaria = fecha.date()
@@ -23,10 +25,25 @@ def get_db_connection():
 
 
 
+
+base_dir  = Path().resolve()
+
+db_path_bd1 = base_dir / "BBDDs" / "BBDD-Cementerio.db"
+
+def get_db():
+    conexion = sqlite3.connect(str(base_dir))
+    return conexion
+
+
+
+
+
+
+
 class cementerio:
   
     def ventas_cementerio(self,fi,fo):
-        self.coneccion = sqlite3.connect(r"C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\BBDD-Cementerio.db")
+        self.coneccion = get_db()
         self.cursor = self.coneccion.cursor()        
         self.cursor.execute("""SELECT 
                 SUM(V_USD) AS total_usd,
@@ -42,7 +59,3 @@ class cementerio:
         self.data = self.cursor.fetchall()
         return self.data
 
-
-ayer = cementerio()
-venta_ayer = ayer.ventas_cementerio('2025-02-03','2025-02-03')
-print(venta_ayer)
