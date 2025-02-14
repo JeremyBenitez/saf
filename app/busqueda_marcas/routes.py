@@ -116,7 +116,7 @@ def tiendasxmarcadetalle_tiendas():
 
 
 
-
+#//////NUEVA IMPLEMENTACION DE SP DE DEPARTAMENTOS
 @marcas_bp.route('/ventasdepartamentos',methods=['GET', 'POST'])
 def veentas_departamento_genral():
     try:
@@ -129,15 +129,17 @@ def veentas_departamento_genral():
         rows = cursor.fetchall()
         data = [dict(zip(columns, row)) for row in rows]
         conexion.close()
-        return jsonify(data)
+        total = []
+        for i in data:
+            valor = int(i['TOTALUSD'])
+            total.append(valor)
+        return jsonify({"total":sum(total)})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
 
-
-
-
+#/////////////////////////////\\\\\\\\\\\\\\\\
 
 @marcas_bp.route('/', methods=['GET', 'POST'])
 def departamentos_lista():

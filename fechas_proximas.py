@@ -12,7 +12,7 @@ fecha_5Day = fecha_diaria + timedelta(days=5)
 fecha_6Day = fecha_diaria + timedelta(days=6)
 
 def Update(f1,f2,f3,f4,f5,f6,id_fecha):    
-    conexion = sqlite3.connect(r'C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\DBD1.db')
+    conexion = sqlite3.connect(r'C:\Users\Windows 11\Desktop\SAF-DASHBOARD\BBDDs\DBD1.db')
     pointer = conexion.cursor()
     pointer.execute("UPDATE fechas SET field1 = ?,field2= ?, field3 = ?, field4 = ?,field5=?, field6= ? WHERE ID = ?",(f1,f2,f3,f4,f5,f6, id_fecha))
     conexion.commit()

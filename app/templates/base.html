@@ -9,8 +9,6 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
     <link rel="icon" href="{{ url_for('static', filename='Css/icono.ico') }}" type="image/x-icon">
-    
-
 </head>
 
 <body>
@@ -84,11 +82,11 @@
                     <a href="/2024" class="list-group-item list-group-item-action">
                         <i class='fas fa-industry'></i></i>Resumen 2024
                     </a>
-                    <!--
-                    <a href="/inventario" class="list-group-item list-group-item-action">
-                        <i class='bx bxs-bar-chart-square'></i></i>Rendimiento
+
+                    <a href="#" class="list-group-item list-group-item-action" id="openSubMenu2">
+                        <i class='bx bxs-bar-chart-alt-2'></i></i>Inventario
                     </a>
-                    -->
+
                     {%endif%}
                     {%endif%}
                     <hr style="border: 1px solid #000; width: 100%; margin: 20px auto;">
@@ -122,6 +120,22 @@
                     <li><a class="list-group-item" href="/tiendas/valencia">Valencia</a></li>
                     <li><a class="list-group-item" href="/tiendas/valera">Valera</a></li>
                     <li><a class="list-group-item" href="/tiendas/cementerio">Tienda cementerio</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Submenú de Tiendas -->
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="subMenuInventario" aria-labelledby="subMenuTiendasLabel" style="z-index: 1049;">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title text-primary" id="subMenuTiendasLabel">Inventario</h5>
+                <button type="button" class="btn-back" id="backToMenu2" aria-label="Volver al Menú Principal">
+                    <i class="fas fa-arrow-left"></i> <!-- Icono de flecha hacia la izquierda -->
+                </button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="list-unstyled">
+                    <li><a class="list-group-item" href="/ajustes">Ajustes</a></li>
+                    <li><a class="list-group-item" href="/reposicion">Reposición</a></li>
                 </ul>
             </div>
         </div>
