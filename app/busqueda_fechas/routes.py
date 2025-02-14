@@ -2,9 +2,9 @@ from flask import Blueprint, render_template, request,redirect,session,flash,url
 from ..querys_sqlite_data.conexion_sqlite import consulta_ventas
 from datetime import datetime,timedelta
 from ..querys_sqlite_data.database import get_db_connection
+from ..querys_sqlite_data.conexion_sqlite import get_db_db2024,get_db
 import sqlite3
 import requests
-from ..querys_sqlite_data.database import general_usd, general_efe,general_csh,general_bs
 
 
 fechas_bp = Blueprint('fechas', __name__)
@@ -172,7 +172,7 @@ def apigeneral(tienda):
             "FechaFin": fecha_fin
         }
         # Base URL para las otras APIs
-        base_url = "http://192.168.2.103:5000"  
+        base_url = "http://10.21.5.188:5000"  
         
         # Endpoints a llamar
         endpoints = {
@@ -211,7 +211,7 @@ def apigeneral(tienda):
 def usdxTiendas(tienda):
     try:
         data = request.json
-        conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BDTiendas.db")
+        conexion = get_db()
         pointer = conexion.cursor()
         pointer.execute(f"""
                         SELECT 
@@ -264,7 +264,7 @@ def efectividadPos():
 def consulta_sp():
     try:
         data = request.json
-        conetion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BD2024.db")
+        conetion = get_db_db2024()
         cursor = conetion.cursor()
         
         cursor.execute("""
@@ -320,7 +320,7 @@ WHERE FECHA BETWEEN ? AND ?;""",(data['fecha_ini'],data['fecha_fin']))
 def usdxTiendas2024(tabla):
     try:
         data = request.json
-        conexion = sqlite3.connect(r"C:\Users\Windows 11\Downloads\Dashboard-main\Dashboard-main\BBDDs\BD2024.db")
+        conexion = get_db_db2024()
         pointer = conexion.cursor()
         pointer.execute(f"""
                         SELECT 

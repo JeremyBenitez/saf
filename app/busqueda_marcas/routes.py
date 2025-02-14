@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request,redirect,session,flash,url_for, jsonify
+from collections import defaultdict
 from ..querys_sqlite_data import conexion_sqlite
 from datetime import datetime,timedelta
 import pandas as pd
 from ..querys_sqlite_data.database import departamentos, get_db_connection
 import requests
-
+from .tiendas import tiendas_completas, tiendas_simplificadas
 marcas_bp = Blueprint('marcas', __name__)
 
 
@@ -17,104 +18,102 @@ def add_cors_headers(response):
 
 
 
-
-@marcas_bp.route('/marcasusd',methods=['GET', 'POST'])
-def marcas_USD():
+#nueva implmentacion
+@marcas_bp.route('/marcasdetalles',methods=['GET', 'POST'])
+def tiendasxmarcadetalles():
     try:
-        data = request.json
-        conexion = get_db_connection()
-        cursor = conexion.cursor()
-        cursor.execute("TotalVentasenUSDxMARCASGENERAL @FechaInicio = ?, @FechaFin = ? , @C_MARCA = ? "
-                       ,(data['FechaInicio'],data['FechaFin'],data['marca']))              
-        columns = [column[0] for column in cursor.description]
-        rows = cursor.fetchall()
-        data = [dict(zip(columns, row)) for row in rows]
-        conexion.close()
-        return jsonify(data)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-@marcas_bp.route('/marcasbs',methods=['GET', 'POST'])
-def marcas_bs():
-    try:
-        data = request.json
-        conexion = get_db_connection()
-        cursor = conexion.cursor()
-        cursor.execute("TotalVentasenBsxMARCASGENERAL @FechaInicio = ?, @FechaFin = ? , @C_MARCA = ? "
-                       ,(data['FechaInicio'],data['FechaFin'],data['marca']))              
-        columns = [column[0] for column in cursor.description]
-        rows = cursor.fetchall()
-        data = [dict(zip(columns, row)) for row in rows]
-        conexion.close()
-        return jsonify(data)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-
-
-
-@marcas_bp.route('/apigeneral/', methods=['GET', 'POST'])
-def apigeneral():
-    try:
-        # Datos enviados desde el cliente
-        data = request.json
-        fecha_inicio = data.get("FechaInicio")
-        fecha_fin = data.get("FechaFin")
-        marca = data.get('marca')
-        payload = {
-            "FechaInicio": fecha_inicio,
-            "FechaFin": fecha_fin,
-            "marca": marca
-        }
-        # Base URL para las otras APIs
-        base_url = "http://192.168.2.103:5000"  
         
-        # Endpoints a llamar
-        endpoints = {
-            "MarcaUSD": f"{base_url}/marcas/marcasusd",
-            "MarcaBs": f"{base_url}/marcas/marcasbs",
-            
-           
-        }
-
-
-        results = {}
-        headers = {"Content-Type": "application/json"}  # Encabezado común
-
-        for key, url in endpoints.items():
-            response = requests.post(url, json=payload, headers=headers)
-            
-            # Verificar si la respuesta fue exitosa
-            if response.status_code == 200:
-                results[key] = response.json()
-            else:
-                results[key] = {"error": f"Error al llamar {key}", "status": response.status_code}
-
-        # Respuesta combinada
-        return jsonify(results)
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-
-@marcas_bp.route('/tiendas',methods=['GET', 'POST'])
-def tiendasxmarca():
-    try:
         data = request.json
+        parametro_marca = f'%{data['marca']}%'
         conexion = get_db_connection()
         cursor = conexion.cursor()
-        cursor.execute("TotalVentasenUSDxMARCASGENERALxTIENDAS @FechaInicio = ?, @FechaFin = ? , @C_MARCA = ? "
-                       ,(data['FechaInicio'],data['FechaFin'],data['marca']))              
+        cursor.execute("sp_reportes_ventas_productos @FechaInicio = ?, @FechaFin = ? , @Filtro  = ? "
+                       ,(data['FechaInicio'],data['FechaFin'],parametro_marca))              
         columns = [column[0] for column in cursor.description]
         rows = cursor.fetchall()
         data = [dict(zip(columns, row)) for row in rows]
         conexion.close()
-        return jsonify(data)
+        ventas = []
+        unidades = []
+        for suma_tienda in data:
+            ventas.append(suma_tienda['total_USD'])
+            unidades.append(suma_tienda['cantidad'])
+        total_usd = sum(ventas)
+        total_cantidades = sum(unidades)
+        return jsonify({"Total_USD":total_usd, "cantidades":total_cantidades})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
+
+
+@marcas_bp.route('/marcasdetallesbs',methods=['GET', 'POST'])
+def marcasbs():
+    try:
+        
+        data = request.json
+        parametro_marca = f'%{data['marca']}%'
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        cursor.execute("sp_reportes_ventas_productos_VES @FechaInicio = ?, @FechaFin = ? , @Filtro  = ? "
+                       ,(data['FechaInicio'],data['FechaFin'],parametro_marca))              
+        columns = [column[0] for column in cursor.description]
+        rows = cursor.fetchall()
+        data = [dict(zip(columns, row)) for row in rows]
+        conexion.close()
+        total_bs = []
+   
+        for i in data:
+            total_bs.append(i['total'])
+  
+        suma_total_bs = sum(total_bs)
+
+
+        return jsonify({"Total_BS":suma_total_bs})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
+@marcas_bp.route('/marcasdetallesxtiendas',methods=['GET', 'POST'])
+def tiendasxmarcadetalle_tiendas():
+    try:
+        data = request.json
+        parametro_marca = f'%{data['marca']}%'
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        cursor.execute("sp_reportes_ventas_productos @FechaInicio = ?, @FechaFin = ? , @Filtro  = ? "
+                       ,(data['FechaInicio'],data['FechaFin'],parametro_marca))              
+        columns = [column[0] for column in cursor.description]
+        rows = cursor.fetchall()
+        data = [dict(zip(columns, row)) for row in rows]
+        conexion.close()
+        suma_por_tienda = defaultdict(lambda: {"total_USD": 0.0, "cantidad": 0.0})
+
+        mapa_tiendas = dict(zip(tiendas_completas, tiendas_simplificadas))
+
+        for registro in data:
+            tienda_completa = registro["Tienda"]
+            tienda_simplificada = mapa_tiendas.get(tienda_completa, tienda_completa)  
+            suma_por_tienda[tienda_simplificada]["total_USD"] += registro.get("total_USD", 0.0)
+            suma_por_tienda[tienda_simplificada]["cantidad"] += registro.get("cantidad", 0.0)
+        return jsonify(suma_por_tienda)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+#//////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 
 
