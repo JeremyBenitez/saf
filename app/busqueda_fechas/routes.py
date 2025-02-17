@@ -17,9 +17,6 @@ def add_cors_headers(response):
     return response
 
 
-
-
-
 @fechas_bp.route('/usd/<tienda>', methods=['GET', 'POST'])
 def tiendas(tienda):
     try:
@@ -112,7 +109,6 @@ def tiendasCSH(tienda):
         columns = [column[0] for column in cursor.description]
         rows = cursor.fetchall()
         data = [dict(zip(columns, row)) for row in rows]
-
         conetion.close()
         return jsonify(data)
     except Exception as e:
