@@ -1,10 +1,14 @@
 import sqlite3
 from datetime import datetime,timedelta
+from pathlib import Path
+
+
+
 fecha = datetime.now()
 fecha_diaria = fecha.date()
 fecha_hace_6Day = fecha_diaria - timedelta(days=6)
 
-from pathlib import Path
+
 base_dir  = Path().resolve()
 
 db_path = base_dir / "BBDDs" / "BDTiendas.db"
