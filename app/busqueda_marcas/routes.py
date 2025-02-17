@@ -6,6 +6,8 @@ import pandas as pd
 from ..querys_sqlite_data.database import departamentos, get_db_connection
 import requests
 from .tiendas import tiendas_completas, tiendas_simplificadas
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 marcas_bp = Blueprint('marcas', __name__)
 
 
@@ -117,6 +119,7 @@ def tiendasxmarcadetalle_tiendas():
 
 
 #//////NUEVA IMPLEMENTACION DE SP DE DEPARTAMENTOS
+
 @marcas_bp.route('/ventasdepartamentos',methods=['GET', 'POST'])
 def veentas_departamento_genral():
     try:
@@ -133,13 +136,191 @@ def veentas_departamento_genral():
         for i in data:
             valor = int(i['TOTALUSD'])
             total.append(valor)
-        return jsonify({"total":sum(total)})
+        return jsonify({"Total_ventas_departamento":sum(total)})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
 
-#/////////////////////////////\\\\\\\\\\\\\\\\
+
+
+
+
+@marcas_bp.route('/ventasdepartamentosmultidb',methods=['GET', 'POST'])
+def veentas_departamentomultidb():
+    try:
+        json = request.json
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        cursor.execute("sp_ConsultaInventarioMultiDB2  @FechaInicio  = ?, @FechaFin = ?"
+                       ,(json['FechaInicio'],json['FechaFin']))              
+        columns = [column[0] for column in cursor.description]
+        rows = cursor.fetchall()
+        data = [dict(zip(columns, row)) for row in rows]
+        conexion.close()
+        
+        suma_por_tienda = defaultdict(lambda: {"total_USD": 0.0, "cantidad": 0.0})
+
+        # Mapeo de tiendas
+        mapa_tiendas = dict(zip(tiendas_completas, tiendas_simplificadas))
+        filtro = json['filtro']
+
+        total_usd = 0.0
+        total_cantidad = 0.0
+
+        for registro in data:
+            # Verificar si el registro cumple con el filtro por 'c_Departamento'
+            if registro.get("c_Departamento") == filtro:
+                tienda_completa = registro["BaseDatos"]
+                tienda_simplificada = mapa_tiendas.get(tienda_completa, tienda_completa)
+
+                # Convertir 'total' de forma segura a float
+                try:
+                    valor_flotante = float(registro.get("total", 0.0))
+                except (ValueError, TypeError):
+                    valor_flotante = 0.0
+
+                # Convertir 'cantidad' de forma segura a float
+                try:
+                    cantidad_flotante = float(registro.get("cantidad", 0.0))
+                except (ValueError, TypeError):
+                    cantidad_flotante = 0.0
+
+                # Sumar al total por tienda
+                suma_por_tienda[tienda_simplificada]["total_USD"] += valor_flotante
+                suma_por_tienda[tienda_simplificada]["cantidad"] += cantidad_flotante
+
+                # Sumar al total general
+                total_usd += valor_flotante
+                total_cantidad += cantidad_flotante
+
+        # Convertir a un diccionario normal para que jsonify funcione correctamente
+        suma_por_tienda = dict(suma_por_tienda)
+
+        return jsonify({
+            "filtro": filtro,
+            "valores_tiendas": suma_por_tienda,
+            "total_usd": total_usd,
+            "total_cantidad": total_cantidad
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
+
+#valor en BS
+@marcas_bp.route('/ventasdepartamentosmultidb_bs',methods=['GET', 'POST'])
+def veentas_departamentomultidb_bs():
+    try:
+        json = request.json
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        cursor.execute("sp_ConsultaInventarioMultiDB2VES  @FechaInicio  = ?, @FechaFin = ?"
+                       ,(json['FechaInicio'],json['FechaFin']))              
+        columns = [column[0] for column in cursor.description]
+        rows = cursor.fetchall()
+        data = [dict(zip(columns, row)) for row in rows]
+        conexion.close()
+        
+        suma_por_tienda = defaultdict(lambda: {"total_BS": 0.0})
+
+        # Mapeo de tiendas
+        mapa_tiendas = dict(zip(tiendas_completas, tiendas_simplificadas))
+        filtro = json['filtro']
+
+        total_bs = 0.0
+
+        for registro in data:
+            # Verificar si el registro cumple con el filtro por 'c_Departamento'
+            if registro.get("c_Departamento") == filtro:
+                tienda_completa = registro["BaseDatos"]
+                tienda_simplificada = mapa_tiendas.get(tienda_completa, tienda_completa)
+
+                # Convertir 'total' de forma segura a float
+                try:
+                    valor_flotante = float(registro.get("total", 0.0))
+                except (ValueError, TypeError):
+                    valor_flotante = 0.0
+
+                # Sumar al total por tienda
+                suma_por_tienda[tienda_simplificada]["total_BS"] += valor_flotante
+
+                # Sumar al total general
+                total_bs += valor_flotante
+
+
+        return jsonify({
+            "filtro": filtro,
+            "total_bs": total_bs,
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+@marcas_bp.route('/consulta_general', methods=['GET', 'POST'])
+def consulta_general():
+    try:
+        # Datos enviados desde el cliente
+        data = request.json
+        fecha_inicio = data.get("FechaInicio")
+        fecha_fin = data.get("FechaFin")
+        filtro = data.get("filtro")
+        payload = {
+            "FechaInicio": fecha_inicio,
+            "FechaFin": fecha_fin,
+            "filtro": filtro
+        }
+        
+        # Base URL para las otras APIs
+        base_url = "http://10.21.5.99:5000"
+
+        # Endpoints a llamar
+        endpoints = {
+            "usd": f"{base_url}/marcas/ventasdepartamentosmultidb",
+            "bsTienda": f"{base_url}/marcas/ventasdepartamentosmultidb_bs",
+        }
+
+        results = {}
+        headers = {"Content-Type": "application/json"}  # Encabezado común
+
+        # Definir una función para realizar la solicitud
+        def fetch_data(key, url):
+            try:
+                response = requests.post(url, json=payload, headers=headers)
+                if response.status_code == 200:
+                    return key, response.json()
+                else:
+                    return key, {"error": f"Error al llamar {key}", "status": response.status_code}
+            except Exception as e:
+                return key, {"error": str(e)}
+
+        # Ejecutar las solicitudes en paralelo
+        with ThreadPoolExecutor() as executor:
+            futures = [executor.submit(fetch_data, key, url) for key, url in endpoints.items()]
+
+            for future in as_completed(futures):
+                key, result = future.result()
+                results[key] = result
+
+        # Respuesta combinada
+        return jsonify(results)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+#/////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 @marcas_bp.route('/', methods=['GET', 'POST'])
 def departamentos_lista():
