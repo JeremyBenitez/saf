@@ -33,6 +33,9 @@ def kapitana():
     
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
@@ -52,15 +55,68 @@ def kapitana():
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
     
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
 
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
 
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html", ventas_usd = kapitana[-1][1] ,
                                             ventas_bs =kapitana[-1][2] ,
                                             ventas_csh = kapitana[-1][3],
                                             venta_efe = kapitana[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/baralt')
@@ -69,32 +125,86 @@ def baralt():
     baralt = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     
     return render_template("tiendas.html", ventas_usd = baralt[-1][1] ,
                                             ventas_bs =baralt[-1][2] ,
                                             ventas_csh = baralt[-1][3],
                                             venta_efe = baralt[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/cruzverde')
@@ -103,31 +213,85 @@ def cruz_verde():
     cruz_verde = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = cruz_verde[-1][1] ,
                                             ventas_bs =cruz_verde[-1][2] ,
                                             ventas_csh = cruz_verde[-1][3],
                                             venta_efe = cruz_verde[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/catia')
@@ -136,63 +300,171 @@ def catia():
     catia = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = catia[-1][1] ,
                                             ventas_bs =catia[-1][2] ,
                                             ventas_csh = catia[-1][3],
                                             venta_efe = catia[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0
-                           )
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 @tiendas_bp.route('/propatria')
 def propatria():
     contex = "propatria"
     propatria = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
+
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = propatria[-1][1] ,
                                             ventas_bs =propatria[-1][2] ,
                                             ventas_csh = propatria[-1][3],
                                             venta_efe = propatria[-1][4],
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/guanare')
@@ -201,31 +473,85 @@ def guanare():
     guanare = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = guanare[-1][1] ,
                                             ventas_bs =guanare[-1][2] ,
                                             ventas_csh = guanare[-1][3],
                                             venta_efe = guanare[-1][4],
+                                             
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
     
 
     
@@ -235,31 +561,85 @@ def cagua():
     cagua = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = cagua[-1][1] ,
                                             ventas_bs =cagua[-1][2] ,
                                             ventas_csh = cagua[-1][3],
                                             venta_efe = cagua[-1][4],
+                                             
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/barquisimeto')
@@ -268,31 +648,85 @@ def barquisimeto():
     barquisimeto = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = barquisimeto[-1][1] ,
                                             ventas_bs =barquisimeto[-1][2] ,
                                             ventas_csh = barquisimeto[-1][3],
                                             venta_efe = barquisimeto[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 
@@ -303,62 +737,169 @@ def guacara():
     guacara = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = guacara[-1][1] ,
                                             ventas_bs =guacara[-1][2] ,
                                             ventas_csh = guacara[-1][3],
                                             venta_efe = guacara[-1][4],
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 @tiendas_bp.route('/cabudare')
 def cabudare():
     contex = "cabudare"
     cabudare = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = cabudare[-1][1] ,
                                             ventas_bs =cabudare[-1][2] ,
                                             ventas_csh = cabudare[-1][3],
                                             venta_efe = cabudare[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 @tiendas_bp.route('/upata')
 def upata():
@@ -366,31 +907,85 @@ def upata():
     upata = ventasxtiendas.tiendas(contex)
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = upata[-1][1] ,
                                             ventas_bs =upata[-1][2] ,
                                             ventas_csh = upata[-1][3],
                                             venta_efe = upata[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/cabimas')
@@ -400,32 +995,86 @@ def cabimas():
 
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
 
     return render_template("tiendas.html",ventas_usd = cabimas[-1][1] ,
                                             ventas_bs =cabimas[-1][2] ,
                                             ventas_csh = cabimas[-1][3],
                                             venta_efe = cabimas[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/maturin')
@@ -435,32 +1084,86 @@ def maturin():
 
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
 
     return render_template("tiendas.html",ventas_usd = maturin[-1][1] ,
                                             ventas_bs =maturin[-1][2] ,
                                             ventas_csh = maturin[-1][3],
                                             venta_efe = maturin[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 @tiendas_bp.route('/valera')
 def valera():
@@ -469,32 +1172,86 @@ def valera():
 
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
+
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
 
     return render_template("tiendas.html",ventas_usd = valera[-1][1] ,
                                             ventas_bs =valera[-1][2] ,
                                             ventas_csh = valera[-1][3],
                                             venta_efe = valera[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 
@@ -505,32 +1262,85 @@ def valencia():
 
     grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
+    grafico_mensuales_enero = ventasxtiendas.tienda_times(contex,'2025-01-02','2025-01-31')
+    grafico_mensuales_febrero = ventasxtiendas.tienda_times(contex,'2025-02-01','2025-02-28')
+    
     daily_sales = [grafico_x_dia[-1]['V_USD']]
     if str(fecha_diaria) >= fechas[0][1]:
         daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][2]:
         daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][3]:
         daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][4]:
         daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][5]:
         daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-
     if str(fecha_diaria) >= fechas[0][6]:
         daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    
+    valor_mensual = []
+    lista_cashea_mensual = []
+    lista_bs_mensual = []
+    lista_efe_mensual = []
+    for i in grafico_mensuales_enero:
+        valor_mensual.append(i['V_USD'])
+        lista_cashea_mensual.append(i['V_CSH'])
+        lista_bs_mensual.append(i['V_BS'])
+        lista_efe_mensual.append(i['V_EFEC'])
+        
+        
+    semana1 = []
+    semana2 = []
+    semana3= []
+    semana4 = []
+    valor_semanal = []
+    for j in grafico_mensuales_febrero:
+        if j['FECHA'] >= '2025-02-01' and j['FECHA'] <= '2025-02-02':
+            semana1.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-03' and j['FECHA'] <= '2025-02-09':
+            semana2.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-10' and j['FECHA'] <= '2025-02-16':
+            semana3.append(j['V_USD'])
+        elif j['FECHA'] >= '2025-02-17' and j['FECHA'] <= '2025-02-23':
+            semana4.append(j['V_USD'])  
 
+    valor_semanal.append((semana1))
+    valor_semanal.append((semana2))
+    valor_semanal.append((semana3))
+    valor_semanal.append((semana4))
+
+    
+    
+    monthly_sales = [sum(valor_mensual)]
+    
+    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3])]
+    lista_cashea = []
+    lista_bs = []
+    lista_efe = []
+    for k in grafico_mensuales_febrero:
+        lista_cashea.append(k['V_CSH'])
+        lista_bs.append(k['V_BS'])
+        lista_efe.append(k['V_EFEC'])
     return render_template("tiendas.html",ventas_usd = valencia[-1][1] ,
                                             ventas_bs =valencia[-1][2] ,
                                             ventas_csh = valencia[-1][3],
                                             venta_efe = valencia[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                            suma_semanal_csh = sum(lista_cashea),
+                                            suma_semanal_bs = sum(lista_bs),
+                                            suma_semanal_efectivo = sum(lista_efe),
+                                            
+                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual_bs =sum(lista_bs_mensual),
+                                            suma_mensual_csh =sum(lista_cashea_mensual),
+                                            suma_mensual_efec =sum(lista_efe_mensual),
+                                            
+                                            
                                             daily_sales = daily_sales,
-                                            weekly_sales = 0, 
-                                            monthly_sales = 0)
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/cementerio')
