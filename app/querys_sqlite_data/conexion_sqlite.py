@@ -107,32 +107,9 @@ class index:
 
 a = index()
 
-valor =a.tienda_times('Kapitana','2025-02-01','2025-02-28')
+valor =a.tienda_times('Kapitana','2025-01-01','2025-01-31')
 print(valor)
 
-semana1 = []
-semana2 = []
-semana3= []
-semana4 = []
-
-valores = []
-
-for i in valor:
-        if i['FECHA'] >= '2025-02-01' and i['FECHA'] <= '2025-02-02':
-            semana1.append(i['V_USD'])
-        elif i['FECHA'] >= '2025-02-03' and i['FECHA'] <= '2025-02-09':
-            semana2.append(i['V_USD'])
-        elif i['FECHA'] >= '2025-02-10' and i['FECHA'] <= '2025-02-16':
-            semana3.append(i['V_USD'])
-        elif i['FECHA'] >= '2025-02-17' and i['FECHA'] <= '2025-02-23':
-            semana4.append(i['V_USD'])   
-
-
-valores.append((semana1))
-valores.append((semana2))
-valores.append((semana3))
-valores.append((semana4))
-print(valores)
 
 
 
