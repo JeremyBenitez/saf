@@ -27,6 +27,7 @@ def buscar():
         # Ejecutar el procedimiento almacenado con los parámetros
         query = '[dbo].[sp_AnalisisInventario] @FechaInicio = ?, @FechaFin = ?, @CodArticulo = ?'
         cursor.execute(query, (fecha_ini, fecha_fin, codigo))
+        #cursor.execute(query, ('2024-12-24','2024-12-24','RPCA01100048'))
 
         # Obtener los nombres de las columnas de la consulta
         columns = [column[0] for column in cursor.description]
@@ -37,12 +38,13 @@ def buscar():
 
         # Cerrar la conexión a la base de datos
         db.close()
-
+        
         # Si hay datos, devolver el JSON
         if data:
             return jsonify(data)
         else:
             return jsonify({'error': 'Datos no encontrados'}), 404
-
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+

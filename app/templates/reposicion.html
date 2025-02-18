@@ -3,13 +3,13 @@
 
 <style>
     #search {
-        padding: 10px 0;
+        padding: 5px 0;
     }
     .search-block {
         background: #fff;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        padding: 15px;
+        padding: 10px;
     }
     .label-style {
         font-weight: bold;
@@ -37,6 +37,13 @@
     }
     i{
         font-size: 1.5em;
+    }
+    table, tbody, td{
+        font-size: 0.94em;
+    }
+    .card, h5{
+        font-size: 0.94em;
+        text-align: center;
     }
     #buscar {
         display: flex;
@@ -90,6 +97,7 @@
     <!-- Tabla Reposicion -->
     <div class="search">
         <div class="card" style="margin-top: 10px;">
+            <h5>Días de Analisis: <span id="ana">0</span></h5>
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr style="text-align: center;">
@@ -101,7 +109,6 @@
                         <th>Salidas</th>
                         <th>Sugerir Reposición</th>
                         <th>Monto Sugerido</th>
-                        <th>Días de Análisis</th>
                         <th>Progreso</th>
                     </tr>
                 </thead>
@@ -124,8 +131,8 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("buscar")?.addEventListener("click", async () => {
-        const codigo = document.getElementById('codigo');
-            codigo.value = codigo.value.toUpperCase();
+        const codigo = document.getElementById('codigo').value;
+            codigo.value = codigo.toUpperCase();
         const fecha_ini = document.getElementById('startDate').value;
         const fecha_fin = document.getElementById('endDate').value;
 
@@ -140,39 +147,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 const tableBody = document.getElementById("table-body");
+                const dias_ana = data[0].DiasAnalisis;
+                // Referenciamos el span y actualizamos su contenido
+                document.getElementById('ana').textContent = dias_ana;
+
                 tableBody.innerHTML = ""; // Limpia la tabla antes de agregar nuevos datos
 
                 data.forEach((item, index) => {
+                    /*
                     // Definir el porcentaje de progreso basado en salidas
                     let progreso = 0;
-                    if (item.stock_actual + item.entradas > 0) {
-                        progreso = Math.round((item.salidas / (item.stock_actual + item.entradas)) * 100);
+                    if (item.StockActual + item.Entradas > 0) {
+                        progreso = Math.round((item.Salidas / (item.StockActual + item.Entradas)) * 100);
                     }
-
+                    console.log(progreso);
+                    */
                     // Determinar el color de la barra de progreso
                     let colorClass = "bg-danger"; // Rojo por defecto
-                    if (progreso > 30 && progreso <= 70) {
+                    if (item.Salidas > 30 && item.Salidas <= 70) {
                         colorClass = "bg-primary"; // Azul
-                    } else if (progreso > 70) {
+                    } else if (item.Salidas > 70) {
                         colorClass = "bg-success"; // Verde
                     }
 
                     // Crear la fila con los datos
                     const row = `
                         <tr>
-                            <td>${item.codigo_articulo}</td>
-                            <td>${item.descripcion}</td>
-                            <td>${item.tienda}</td>
-                            <td>${item.stock_actual}</td>
-                            <td>${item.entradas}</td>
-                            <td>${item.salidas}</td>
-                            <td>${item.sugerir_reposicion}</td>
-                            <td>${item.monto_sugerido}</td>
-                            <td>${item.dias_analisis}</td>
+                            <td>${item.CodArticulo}</td>
+                            <td>${item.DescripcionArticulo}</td>
+                            <td>${item.Tienda}</td>
+                            <td>${item.StockActual}</td>
+                            <td>${item.Entradas}</td>
+                            <td>${item.Salidas}</td>
+                            <td>${item.SugerirReposicion}</td>
+                            <td>${item.MontoSugeridoReposicion}</td>
                             <td>
                                 <div class="progress">
-                                    <div class="progress-bar ${colorClass}" role="progressbar" style="width: ${progreso}%" aria-valuenow="${progreso}" aria-valuemin="0" aria-valuemax="100">
-                                        ${progreso}%
+                                    <div class="progress-bar ${colorClass}" role="progressbar" style="width: ${item.Salidas}%" " aria-valuemin="0" aria-valuemax="100">
+                                        ${item.Salidas}%
                                     </div>
                                 </div>
                             </td>
