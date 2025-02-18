@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request,redirect,session,flash,url_for
+from flask import Blueprint, render_template, request,redirect,session,flash,url_for, jsonify
 from ..querys_sqlite_data import conexion_sqlite
 from datetime import datetime,timedelta
 import pandas as pd
@@ -88,3 +88,59 @@ def index():
     else:
         flash('Debes iniciar sesión para acceder a esta página')
         return redirect(url_for('loggin.loggin'))
+    
+    
+
+
+@index_bp.route('/frontd',methods=['GET', 'POST'])
+def index2():
+    try:
+
+        ventas = conexion_sqlite.consulta_ventas(str(fecha_diaria), str(fecha_diaria))
+
+        grafico_tiendas = conexion_sqlite.index()
+        babilon = grafico_tiendas.valores('BABILON')
+        baralt = grafico_tiendas.valores('BARALT')        
+        cabudare = grafico_tiendas.valores('CABUDARE')    
+        cagua = grafico_tiendas.valores('CAGUA')
+        cabimas = grafico_tiendas.valores('CABIMAS')      
+        catia = grafico_tiendas.valores('CATIA')
+        cruz_verde = grafico_tiendas.valores('CRUZ_VERDE')
+        guacara = grafico_tiendas.valores('GUACARA')      
+        guanare = grafico_tiendas.valores('GUANARE')      
+        kapitana = grafico_tiendas.valores('KAPITANA')    
+        maturin = grafico_tiendas.valores('MATURIN')      
+        propatria = grafico_tiendas.valores('PROPATRIA')  
+        upata = grafico_tiendas.valores('UPATA')
+        valencia = grafico_tiendas.valores('VALENCIA')    
+        valera = grafico_tiendas.valores('VALERA') 
+
+
+        valores = {"grafico_tienda":{
+                "BABILON":babilon[-1][0],
+                "BARALT":baralt[-1][0],
+                "CABUDARE":cabudare[-1][0],
+                "CAGUA":cagua[-1][0],
+                "CABIMAS":cabimas[-1][0],
+                "CATIA": catia[-1][0],
+                "CRUZ_VERDE":cruz_verde[-1][0],
+                "GUACARA":guacara[-1][0],
+                "GUANARE":guanare[-1][0],
+                "KAPITANA":kapitana[-1][0],
+                "MATURIN":maturin[-1][0],
+                "PROPATRIA": propatria[-1][0],
+                "UPATA": upata[-1][0],
+                "VALENCIA": valencia[-1][0],
+                "VALERA": valera[-1][0]
+        }, "ventas_generales":{
+            "USD":ventas[0][0],
+            "BS": ventas[0][1],
+            "CASHEA":ventas[0][2],
+            "EFECTIVO":ventas[0][3]
+            
+            
+        }
+                   }
+        return jsonify(valores)
+    except  Exception as e:
+        return jsonify({"error": str(e)}), 500
