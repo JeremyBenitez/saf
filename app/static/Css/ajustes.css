@@ -12,7 +12,7 @@ section {
     width: 100%;
 }   
 .theme-section {
-    padding-top: 2rem;
+    padding-top: 1.8rem;
 }
 h3{
     font-size: 2rem;
@@ -35,9 +35,9 @@ h3{
     left: 0;
     right: 0;
 }
-iconify-icon.search-icons {
-    color: #B8B8B8;
-    font-size: 20px;
+.search-icon-position {
+    color: #998f8f;
+    font-size: 22px;
 }
 .label-style {
     color: var(--body-text-color);
@@ -64,25 +64,28 @@ iconify-icon.search-icons {
 }
 .help-featured-section .item .item-link:hover .item-heading {
     color: #5236CB;
+    cursor: pointer;
 }
 .help-featured-section .item .item-heading {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 0.9rem;
     color: #293647;
     line-height: 1.4;
 }
 .help-featured-section .item .item-desc {
     font-size: 0.875rem;
     color: #4e6788;
+    gap: 1px;
 }
 .help-featured-section .item-inner {
     height: 100%;
-    width: 220px;
+    width: 245px;
 }
 .help-featured-section .item-inner:hover {
     transition: all 0.4s ease-in-out;
     box-shadow: var(--bs-box-shadow-lg) !important;
+    cursor: pointer;
 }
 @media only screen and (max-width: 992px) {
     .search-block {
@@ -157,4 +160,60 @@ iconify-icon.search-icons {
         flex: 1 1 100%; /* 1 por fila en móviles */
         max-width: 100%;
     }
+}
+
+/* Estilos para el modal de factura */
+#facturaModal .modal-content {
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+#facturaModal .modal-header {
+    background: #007bff;
+    color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 15px;
+}
+
+#facturaModal .modal-title {
+    font-weight: bold;
+}
+
+#facturaModal .modal-body {
+    font-size: 16px;
+    color: #333;
+    padding: 20px;
+}
+
+#facturaModal .modal-body p {
+    margin-bottom: 10px;
+}
+
+#facturaModal hr {
+    border-top: 1px dashed #bbb;
+    margin: 15px 0;
+}
+
+#facturaModal .modal-body div {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#facturaModal .modal-body ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#facturaModal .modal-body ul li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+#facturaModal .btn-close {
+    filter: invert(1);
 }
