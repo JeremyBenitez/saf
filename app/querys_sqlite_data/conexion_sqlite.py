@@ -107,7 +107,7 @@ class index:
 
 a = index()
 
-valor =a.tienda_times('Kapitana','2025-01-01','2025-01-31')
+valor =a.tienda_times('Baralt','2025-01-01','2025-02-28')
 print(valor)
 
 

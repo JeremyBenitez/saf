@@ -5,6 +5,7 @@ from ..querys_sqlite_data import cementerio
 from .semanas import semanas_variadas,año,meses
 from .meses import mes_init,mes_fin
 
+
 tiendas_bp = Blueprint('tiendas', __name__)
 
 fecha = datetime.now()
@@ -36,122 +37,88 @@ def kapitana():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
-    
-    
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+
 
     #SECCION DE SEMANAS
-    #TRABAJAR PARA LAS SEMANAS 
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
-    for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
+    for j in grafico_mensuales:
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+# Crear listas para cada tipo de dato (USD, CSH, BS, EFEC) usando comprensión de listas
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
 
     
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
     
-    #SECCION MENSUAL
+    
+    #SECCION MENSUAL////////////////////
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
     return render_template("tiendas.html", ventas_usd = kapitana[-1][1] ,
                                             ventas_bs =kapitana[-1][2] ,
                                             ventas_csh = kapitana[-1][3],
                                             venta_efe = kapitana[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales) ,
+                                            suma_mensual=sum(usd_mensual) ,
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -172,48 +139,45 @@ def baralt():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -221,73 +185,44 @@ def baralt():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
-    
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html", ventas_usd = baralt[-1][1] ,
                                             ventas_bs =baralt[-1][2] ,
                                             ventas_csh = baralt[-1][3],
                                             venta_efe = baralt[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -308,48 +243,45 @@ def cruz_verde():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -357,72 +289,44 @@ def cruz_verde():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = cruz_verde[-1][1] ,
                                             ventas_bs =cruz_verde[-1][2] ,
                                             ventas_csh = cruz_verde[-1][3],
                                             venta_efe = cruz_verde[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -443,48 +347,45 @@ def catia():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -492,72 +393,44 @@ def catia():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = catia[-1][1] ,
                                             ventas_bs =catia[-1][2] ,
                                             ventas_csh = catia[-1][3],
                                             venta_efe = catia[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -578,48 +451,45 @@ def propatria():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -627,71 +497,43 @@ def propatria():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = propatria[-1][1] ,
                                             ventas_bs =propatria[-1][2] ,
                                             ventas_csh = propatria[-1][3],
                                             venta_efe = propatria[-1][4],
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -712,48 +554,45 @@ def guanare():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -761,72 +600,44 @@ def guanare():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = guanare[-1][1] ,
                                             ventas_bs =guanare[-1][2] ,
                                             ventas_csh = guanare[-1][3],
                                             venta_efe = guanare[-1][4],
                                              
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -848,48 +659,45 @@ def cagua():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -897,72 +705,44 @@ def cagua():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = cagua[-1][1] ,
                                             ventas_bs =cagua[-1][2] ,
                                             ventas_csh = cagua[-1][3],
                                             venta_efe = cagua[-1][4],
                                              
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -983,48 +763,45 @@ def barquisimeto():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -1032,72 +809,44 @@ def barquisimeto():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = barquisimeto[-1][1] ,
                                             ventas_bs =barquisimeto[-1][2] ,
                                             ventas_csh = barquisimeto[-1][3],
                                             venta_efe = barquisimeto[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -1120,48 +869,45 @@ def guacara():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -1169,71 +915,43 @@ def guacara():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = guacara[-1][1] ,
                                             ventas_bs =guacara[-1][2] ,
                                             ventas_csh = guacara[-1][3],
                                             venta_efe = guacara[-1][4],
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -1252,48 +970,45 @@ def cabudare():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -1301,72 +1016,44 @@ def cabudare():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = cabudare[-1][1] ,
                                             ventas_bs =cabudare[-1][2] ,
                                             ventas_csh = cabudare[-1][3],
                                             venta_efe = cabudare[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -1386,48 +1073,45 @@ def upata():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -1435,72 +1119,44 @@ def upata():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = upata[-1][1] ,
                                             ventas_bs =upata[-1][2] ,
                                             ventas_csh = upata[-1][3],
                                             venta_efe = upata[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -1522,48 +1178,45 @@ def cabimas():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -1571,61 +1224,33 @@ def cabimas():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
 
     return render_template("tiendas.html",ventas_usd = cabimas[-1][1] ,
                                             ventas_bs =cabimas[-1][2] ,
@@ -1633,11 +1258,11 @@ def cabimas():
                                             venta_efe = cabimas[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -1659,48 +1284,45 @@ def maturin():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -1708,61 +1330,33 @@ def maturin():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
 
     return render_template("tiendas.html",ventas_usd = maturin[-1][1] ,
                                             ventas_bs =maturin[-1][2] ,
@@ -1770,11 +1364,11 @@ def maturin():
                                             venta_efe = maturin[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -1795,48 +1389,45 @@ def valera():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -1844,61 +1435,33 @@ def valera():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
 
     return render_template("tiendas.html",ventas_usd = valera[-1][1] ,
                                             ventas_bs =valera[-1][2] ,
@@ -1906,11 +1469,11 @@ def valera():
                                             venta_efe = valera[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),
@@ -1933,48 +1496,45 @@ def valencia():
 
    #GRAFICOS DIARIOS 
     daily_sales = [grafico_x_dia[-1]['V_USD']]
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,grafico_x_dia[5]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,grafico_x_dia[4]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,grafico_x_dia[3]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,grafico_x_dia[2]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,grafico_x_dia[1]['V_USD'])
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,grafico_x_dia[0]['V_USD'])
+    # Iterar sobre los índices y fechas
+    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
+        if str(fecha_diaria) >= fechas[0][i]:
+            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
     
     
 
     #SECCION DE SEMANAS
-    semana1 = []
-    semana2 = []
-    semana3= []
-    semana4 = []
-    semana5 =[]
-    valor_semanal = []
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
-        if j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[0][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[0][-1]:02d}':
-            semana1.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[1][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[1][-1]:02d}':
-            semana2.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[2][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[2][-1]:02d}':
-            semana3.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[3][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[3][-1]:02d}':
-            semana4.append(j['V_USD'])
-        elif j['FECHA'] >= f'{año}-{mes_actual}-{semanas_variadas[4][0]:02d}' and j['FECHA'] <= f'{año}-{mes_actual}-{semanas_variadas[4][-1]:02d}':
-            semana5.append(j['V_USD'])   
-            
-            
-    valor_semanal.append((semana1))
-    valor_semanal.append((semana2))
-    valor_semanal.append((semana3))
-    valor_semanal.append((semana4))
-    valor_semanal.append((semana5))
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = [sum(valor_semanal[0]), sum(valor_semanal[1]), sum(valor_semanal[2]),sum(valor_semanal[3]),sum(valor_semanal[4])]
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
 
     
     
@@ -1982,72 +1542,44 @@ def valencia():
     
     meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
 
-    # Crear un diccionario vacío para almacenar los gráficos de cada mes
-    grafico_meses = {month: [] for month in range(1, 13)}
-
-    # Rellenar las listas para cada mes
     for valores in grafico_mensuales:
-        fecha = valores['FECHA']
-        
-        # Convertir la fecha para comparar
-        if '2025-01-01' <= fecha <= '2025-01-31':
-            meses[1].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-02-01' <= fecha <= '2025-02-28':
-            meses[2].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-03-01' <= fecha <= '2025-03-31':
-            meses[3].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-04-01' <= fecha <= '2025-04-30':
-            meses[4].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-05-01' <= fecha <= '2025-05-31':
-            meses[5].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-06-01' <= fecha <= '2025-06-30':
-            meses[6].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-07-01' <= fecha <= '2025-07-31':
-            meses[7].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-08-01' <= fecha <= '2025-08-31':
-            meses[8].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-09-01' <= fecha <= '2025-09-30':
-            meses[9].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-10-01' <= fecha <= '2025-10-31':
-            meses[10].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-11-01' <= fecha <= '2025-11-30':
-            meses[11].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
-        elif '2025-12-01' <= fecha <= '2025-12-31':
-            meses[12].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
 
     # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
     usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
     csh = {month: [tupla[1] for tupla in meses[month]] for month in range(1, 13)}
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
-    
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2])]
     bs_mensual = [sum(bs[1]) + sum(bs[2])]
     csh_mensual = [sum(csh[1]) + sum(csh[2])]
     efect_mensual = [sum(efe[1]) + sum(efe[2])]
     
-    #LISTA DEL GRAFICO
-    monthly_sales = [sum(usds[1]), sum(usds[2])]
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
 
-    
-    
-    lista_cashea = []
-    lista_bs = []
-    lista_efe = []
-    for k in grafico_mensuales:
-        lista_cashea.append(k['V_CSH'])
-        lista_bs.append(k['V_BS'])
-        lista_efe.append(k['V_EFEC'])
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
     return render_template("tiendas.html",ventas_usd = valencia[-1][1] ,
                                             ventas_bs =valencia[-1][2] ,
                                             ventas_csh = valencia[-1][3],
                                             venta_efe = valencia[-1][4],
                                             
                                             suma_semanal = sum(weekly_sales),
-                                            suma_semanal_csh = sum(lista_cashea),
-                                            suma_semanal_bs = sum(lista_bs),
-                                            suma_semanal_efectivo = sum(lista_efe),
+                                            suma_semanal_csh = sum(suma_semanal_csh),
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
                                             
-                                            suma_mensual=sum(monthly_sales),
+                                            suma_mensual=sum(usd_mensual),
                                             suma_mensual_bs =sum(bs_mensual),
                                             suma_mensual_csh =sum(csh_mensual),
                                             suma_mensual_efec =sum(efect_mensual),

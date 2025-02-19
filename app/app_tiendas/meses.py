@@ -18,10 +18,8 @@ for month in range(1, 13):
     mes_init.append(str(first_day))
     mes_fin.append(str(last_day))
 
-print()
 
-print(mes_init[mes_date])
-print(mes_fin[mes_date])
+
 
 
 
