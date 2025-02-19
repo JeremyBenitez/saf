@@ -105,6 +105,12 @@ class index:
         self.conexion.close()
         return  self.data
 
+a = index()
+
+valor =a.tienda_times('Baralt','2025-01-01','2025-02-28')
+print(valor)
+
+
 
 
 def consulta_dpto_ventas():
