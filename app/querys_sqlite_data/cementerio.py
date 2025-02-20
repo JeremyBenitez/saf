@@ -31,12 +31,8 @@ base_dir  = Path().resolve()
 db_path_bd1 = base_dir / "BBDDs" / "BBDD-Cementerio.db"
 
 def get_db():
-    conexion = sqlite3.connect(str(base_dir))
+    conexion = sqlite3.connect(str(db_path_bd1))
     return conexion
-
-
-
-
 
 
 
@@ -59,3 +55,32 @@ class cementerio:
         self.data = self.cursor.fetchall()
         return self.data
 
+
+class index:
+
+    def valores(self, tabla):
+        self.conexion = get_db()
+        pointer = self.conexion.cursor()
+        pointer.execute(f"SELECT V_USD , n_trasacciones FROM {tabla} ")
+        self.data = pointer.fetchall()
+        self.conexion.close()
+        return  self.data
+    
+    def tiendas(self, tabla):
+        self.conexion = get_db()
+        pointer = self.conexion.cursor()
+        pointer.execute(f"SELECT * FROM {tabla} ")
+        self.data = pointer.fetchall()
+        self.conexion.close()
+        return  self.data
+    
+    def tienda_times(self, tabla,fi,fo):
+        self.conexion = get_db()
+        pointer = self.conexion.cursor()
+        pointer.execute(f"SELECT * FROM {tabla} WHERE FECHA BETWEEN  ? AND  ?",(fi, fo))
+        colums = [colum[0] for colum in pointer.description]
+        rows = pointer.fetchall()
+        self.data = [dict(zip(colums,row))for  row in rows]
+        self.conexion.close()
+        return  self.data
+    

@@ -25,22 +25,33 @@ ventasxtiendas = conexion_sqlite.index()
 
 fechas = conexion_sqlite.consulta_fechas_prueba()
 
+tienda_cementerio = cementerio.index()
 
 @tiendas_bp.route('/kapitana') 
 def kapitana():
     contex = "Kapitana"
     kapitana = ventasxtiendas.tiendas(contex)
     
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
 
 
     #SECCION DE SEMANAS
@@ -96,10 +107,10 @@ def kapitana():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -124,7 +135,7 @@ def kapitana():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -133,16 +144,26 @@ def kapitana():
 def baralt():
     contex = "Baralt"
     baralt = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -199,10 +220,10 @@ def baralt():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -228,7 +249,7 @@ def baralt():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -237,16 +258,26 @@ def baralt():
 def cruz_verde():
     contex = "cruz_verde"
     cruz_verde = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -303,10 +334,10 @@ def cruz_verde():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -332,7 +363,7 @@ def cruz_verde():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -341,16 +372,26 @@ def cruz_verde():
 def catia():
     contex = "catia"
     catia = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -407,10 +448,10 @@ def catia():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -436,25 +477,34 @@ def catia():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 @tiendas_bp.route('/propatria')
 def propatria():
     contex = "propatria"
     propatria = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -511,10 +561,10 @@ def propatria():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -539,7 +589,7 @@ def propatria():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -548,16 +598,26 @@ def propatria():
 def guanare():
     contex = "guanare"
     guanare = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -614,10 +674,10 @@ def guanare():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -643,7 +703,7 @@ def guanare():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
     
@@ -653,16 +713,26 @@ def guanare():
 def cagua():
     contex = "cagua"
     cagua = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -719,10 +789,10 @@ def cagua():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -748,7 +818,7 @@ def cagua():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -757,16 +827,26 @@ def cagua():
 def barquisimeto():
     contex = "babilon"
     barquisimeto = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -823,10 +903,10 @@ def barquisimeto():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -852,7 +932,7 @@ def barquisimeto():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -863,16 +943,26 @@ def barquisimeto():
 def guacara():
     contex = "guacara"
     guacara = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -929,10 +1019,10 @@ def guacara():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -957,23 +1047,33 @@ def guacara():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 @tiendas_bp.route('/cabudare')
 def cabudare():
     contex = "cabudare"
     cabudare = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -1030,10 +1130,10 @@ def cabudare():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -1059,7 +1159,7 @@ def cabudare():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -1067,16 +1167,26 @@ def cabudare():
 def upata():
     contex = "upata"
     upata = ventasxtiendas.tiendas(contex)
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -1133,10 +1243,10 @@ def upata():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -1162,7 +1272,7 @@ def upata():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -1172,16 +1282,26 @@ def cabimas():
     contex = "cabimas"
     cabimas = ventasxtiendas.tiendas(contex)
 
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -1238,10 +1358,10 @@ def cabimas():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -1268,7 +1388,7 @@ def cabimas():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -1278,16 +1398,26 @@ def maturin():
     contex = "maturin"
     maturin = ventasxtiendas.tiendas(contex)
 
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -1344,10 +1474,10 @@ def maturin():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -1374,7 +1504,7 @@ def maturin():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -1383,16 +1513,26 @@ def valera():
     contex = "valera"
     valera = ventasxtiendas.tiendas(contex)
 
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -1449,10 +1589,10 @@ def valera():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -1479,7 +1619,7 @@ def valera():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
@@ -1490,16 +1630,26 @@ def valencia():
     contex = "valencia"
     valencia = ventasxtiendas.tiendas(contex)
 
-    grafico_x_dia = ventasxtiendas.tienda_times(contex,str(fecha_hace_6Day),str(fecha_diaria))
 
     grafico_mensuales = ventasxtiendas.tienda_times(contex,mes_init[0],mes_fin[11])
 
-   #GRAFICOS DIARIOS 
-    daily_sales = [grafico_x_dia[-1]['V_USD']]
-    # Iterar sobre los índices y fechas
-    for i in range(6, 0, -1):  # Iterar del índice 6 al 1 (de forma descendente)
-        if str(fecha_diaria) >= fechas[0][i]:
-            daily_sales.insert(0, grafico_x_dia[i - 1]['V_USD'])
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
 
@@ -1556,10 +1706,10 @@ def valencia():
     bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
     efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
 
-    usd_mensual = [sum(usds[1])+ sum(usds[2])]
-    bs_mensual = [sum(bs[1]) + sum(bs[2])]
-    csh_mensual = [sum(csh[1]) + sum(csh[2])]
-    efect_mensual = [sum(efe[1]) + sum(efe[2])]
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    csh_mensual = [sum(csh[1]) + sum(csh[2])+ sum(csh[3])+ sum(csh[4])+ sum(csh[5])+ sum(csh[6])+ sum(csh[7])+ sum(csh[8])+ sum(csh[9])+ sum(csh[10])+ sum(csh[11])+ sum(csh[12])]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
     
     #LISTA DEL GRAFICO MENSUAL
     monthly_sales = []
@@ -1585,74 +1735,117 @@ def valencia():
                                             suma_mensual_efec =sum(efect_mensual),
                                             
                                             
-                                            daily_sales = daily_sales,
+                                            daily_sales = ventas_semanales,
                                             weekly_sales = weekly_sales, 
                                             monthly_sales = monthly_sales)
 
 
 @tiendas_bp.route('/cementerio')
 def tiendacementerio():
-    contex = "Tienda Cementerio"
-    
-    
-    ventas = cementerio.cementerio()
-    venta= ventas.ventas_cementerio(str(fecha_diaria),str(fecha_diaria))
+    contex = "VENTAS"
+    cementerio = tienda_cementerio.tiendas(contex)
 
-    venta_1 = ventas.ventas_cementerio(str(fecha_hace_1Day),str(fecha_hace_1Day))
-    venta_2 = ventas.ventas_cementerio(str(fecha_hace_2Day),str(fecha_hace_2Day))
-    venta_3 = ventas.ventas_cementerio(str(fecha_hace_3Day),str(fecha_hace_3Day))
-    venta_4 = ventas.ventas_cementerio(str(fecha_hace_4Day),str(fecha_hace_4Day))
-    venta_5 = ventas.ventas_cementerio(str(fecha_hace_5Day),str(fecha_hace_5Day))
-    venta_6 = ventas.ventas_cementerio(str(fecha_hace_6Day),str(fecha_hace_6Day))
-    
-    fechas = conexion_sqlite.consulta_fechas_prueba()
-    
-    daily_sales = [venta[0][0]]
-    
-    if str(fecha_diaria) >= fechas[0][1]:
-        daily_sales.insert(0,venta_1[0][0])
-        
-    if str(fecha_diaria) >= fechas[0][2]:
-        daily_sales.insert(0,venta_2[0][0])
-        
-    if str(fecha_diaria) >= fechas[0][3]:
-        daily_sales.insert(0,venta_3[0][0])
-        
-    if str(fecha_diaria) >= fechas[0][4]:
-        daily_sales.insert(0,venta_4[0][0])
-        
-    if str(fecha_diaria) >= fechas[0][5]:
-        daily_sales.insert(0,venta_5[0][0])
-    
-    if str(fecha_diaria) >= fechas[0][6]:
-        daily_sales.insert(0,venta_6[0][0])
-        
-    venta_semanas = cementerio.cementerio()
-    s1 = venta_semanas.ventas_cementerio('2025-01-02','2025-01-05') 
-    s2 = venta_semanas.ventas_cementerio('2025-01-06','2025-01-12') 
-    s3 = venta_semanas.ventas_cementerio('2025-01-13','2025-01-19') 
+
+    grafico_mensuales = tienda_cementerio.tienda_times(contex,mes_init[0],mes_fin[11])
+
+# Obtener la fecha actual y calcular el inicio y fin de la semana
+    fecha_sistema = datetime.now().date()  # Fecha del día actual
+    inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
+    fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+
+    # Lista para el rango de fechas de la semana (de lunes a domingo)
+    fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+
+    # Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
+    ventas_semanales = [None] * 7
+
+    # Llenar las ventas semanales con los datos disponibles
+    for registro in grafico_mensuales:
+        fecha = registro['FECHA']
+        if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
+            indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
+            ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
     
     
+
+    #SECCION DE SEMANAS
+    semanas = {semana: [] for semana in range(1, 6)}
+
+# Convertir las fechas de semanas_variadas en rangos de fechas
+    rango_semanas = [
+        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
+        for semana in range(5)
+    ]
+
+    # Iterar sobre los datos en grafico_mensuales
+    for j in grafico_mensuales:
+        fecha_actual = j['FECHA']
+
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+
+    usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+    bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+    efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
     
-    weekly_sales = []
-    suma_bs_semana = 0 
-    suma_efectivo_semanal = 0
-    suma_semanal = 0
+    #LISTA GRAFICO SEMANAL
+    weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+
+    suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+    suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
+
     
-    return render_template("tiendas.html",
-                           ventas_usd_mensuales = 00,
-                           ventas_bs_mensuales =00,
-                           ventas_csh_mensuales = 0,
-                           ventas_efectivo_mensuales =0 ,
-                           venta_efe = 0,
-                           ventas_csh = 0,
-                           ventas_bs = venta[0][1],
-                           ventas_usd = venta[0][0],
-                           daily_sales = daily_sales,
-                           weekly_sales = weekly_sales,
-                           monthly_sales = 0,
-                           muestra_ventas = suma_semanal,
-                           semana_bs = suma_bs_semana,
-                           semana_csh = 0,
-                           semana_efe = suma_efectivo_semanal,
-                           text=contex)
+    
+    #SECCION MENSUAL
+    
+    meses = {month: [] for month in range(1, 13)}  # Diccionario de meses (1 a 12)
+
+    for valores in grafico_mensuales:
+        # Convertir la fecha a un objeto datetime
+        fecha = datetime.strptime(valores['FECHA'], '%Y-%m-%d')
+        # Obtener el número de mes correspondiente
+        mes = fecha.month
+        # Agregar los valores al mes correspondiente en el diccionario
+        meses[mes].append((valores['V_USD'], valores['V_CSH'], valores['V_BS'], valores['V_EFEC']))
+
+    # Crear listas para cada mes (USD, CSH, BS, EFEC) usando comprensión de listas
+    usds = {month: [tupla[0] for tupla in meses[month]] for month in range(1, 13)}
+    bs = {month: [tupla[2] for tupla in meses[month]] for month in range(1, 13)}
+    efe = {month: [tupla[3] for tupla in meses[month]] for month in range(1, 13)}
+
+    usd_mensual = [sum(usds[1])+ sum(usds[2]) + sum(usds[3])+ sum(usds[4])+ sum(usds[5])+ sum(usds[6])+ sum(usds[7])+ sum(usds[8])+ sum(usds[8])+ sum(usds[10])+ sum(usds[11])+ sum(usds[12])]
+    bs_mensual = [sum(bs[1]) + sum(bs[2]) + sum(bs[3])+ sum(bs[4])+ sum(bs[5])+ sum(bs[6])+ sum(bs[7])+ sum(bs[8])+ sum(bs[9])+ sum(bs[10])+ sum(bs[11])+ sum(bs[12]) ]
+    efect_mensual = [sum(efe[1]) + sum(efe[2])+ sum(efe[3])+ sum(efe[4])+ sum(efe[5])+ sum(efe[6])+ sum(efe[7])+ sum(efe[8])+ sum(efe[9])+ sum(efe[10])+ sum(efe[11])+ sum(efe[12])]
+    
+    #LISTA DEL GRAFICO MENSUAL
+    monthly_sales = []
+
+    for i in range(1, 13):
+        if str(fecha_diaria) >= mes_fin[i - 1]:
+            monthly_sales.append(sum(usds[i]))
+
+
+    return render_template("tiendas.html",ventas_usd = cementerio[-1][1] ,
+                                            ventas_csh = 00,
+                                            ventas_bs =cementerio[-1][2] ,
+                                            venta_efe = cementerio[-1][4],
+                                            
+                                            suma_semanal = sum(weekly_sales),
+                                             suma_semanal_csh = 00,
+                                            suma_semanal_bs = sum(suma_semanal_bs),
+                                            suma_semanal_efectivo = sum(suma_semanal_efectivo),
+                                            
+                                            suma_mensual=sum(usd_mensual),
+                                            suma_mensual_bs =sum(bs_mensual),
+                                            suma_mensual_csh = 00,
+                                            suma_mensual_efec =sum(efect_mensual),
+                                            
+                                            
+                                            daily_sales = ventas_semanales,
+                                            weekly_sales = weekly_sales, 
+                                            monthly_sales = monthly_sales)

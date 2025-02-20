@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request,redirect,session,flash,url
 from ..querys_sqlite_data import conexion_sqlite
 from datetime import datetime,timedelta
 import pandas as pd
+from ..querys_sqlite_data import database
+
 
 from ..querys_sqlite_data import conexion_sqlite
 
@@ -36,7 +38,10 @@ def index():
 
     ventas = conexion_sqlite.consulta_ventas(str(fecha_diaria), str(fecha_diaria))
 
-    grafico_usd = [babilon]
+    ta = database.tasa(str(fecha_diaria),str(fecha_diaria))
+    if ta == []:
+        ta = database.tasa('2025-01-03','2025-01-03')
+    
     grafico_mensuales = [enero[0][0]]
     if 'username' in session:
 
@@ -48,7 +53,7 @@ def index():
                                 total_bs = ventas[0][1],
                                 cashea_total = ventas[0][2],
                                 efectivo_total = ventas[0][3],
-                                tasa_dia = 2020,
+                                tasa_dia = ta[0][6],
                                 grafico_tiendas = [babilon[-1][0],
                                                     baralt[-1][0],
                                                     cabudare[-1][0],
