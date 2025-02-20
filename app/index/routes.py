@@ -2,10 +2,11 @@ from flask import Blueprint, render_template, request,redirect,session,flash,url
 from ..querys_sqlite_data import conexion_sqlite
 from datetime import datetime,timedelta
 import pandas as pd
+from calendar import monthrange
 
 from ..querys_sqlite_data import conexion_sqlite
 
-
+"hola"
 
 fecha = datetime.now()
 fecha_diaria = fecha.date()
@@ -14,9 +15,62 @@ index_bp = Blueprint('index', __name__)
 
 @index_bp.route('/',methods=['GET', 'POST'])
 def index():
-    enero = conexion_sqlite.consulta_ventas('2025-01-02','2025-01-31')
+    hoy = datetime.today()
+    año_actual = hoy.year
+    mes_actual = hoy.month
+    ventas_mensuales = []
+    nombres_meses = []
 
+    def ultimo_dia_mes(año, mes):
+        return str(monthrange(año, mes)[1])
     
+    meses = {
+        'Enero': ('2025-01-01', f'2025-01-{ultimo_dia_mes(2025, 1)}'),
+        'Febrero': ('2025-02-01', f'2025-02-{ultimo_dia_mes(2025, 2)}'),
+        'Marzo': ('2025-03-01', f'2025-03-{ultimo_dia_mes(2025, 3)}'),
+        'Abril': ('2025-04-01', f'2025-04-{ultimo_dia_mes(2025, 4)}'),
+        'Mayo': ('2025-05-01', f'2025-05-{ultimo_dia_mes(2025, 5)}'),
+        'Junio': ('2025-06-01', f'2025-06-{ultimo_dia_mes(2025, 6)}'),
+        'Julio': ('2025-07-01', f'2025-07-{ultimo_dia_mes(2025, 7)}'),
+        'Agosto': ('2025-08-01', f'2025-08-{ultimo_dia_mes(2025, 8)}'),
+        'Septiembre': ('2025-09-01', f'2025-09-{ultimo_dia_mes(2025, 9)}'),
+        'Octubre': ('2025-10-01', f'2025-10-{ultimo_dia_mes(2025, 10)}'),
+        'Noviembre': ('2025-11-01', f'2025-11-{ultimo_dia_mes(2025, 11)}'),
+        'Diciembre': ('2025-12-01', f'2025-12-{ultimo_dia_mes(2025, 12)}')
+    }
+    
+    try:
+        for mes, (inicio, fin) in meses.items():
+
+            mes_numero = int(fin.split("-")[1])
+           
+            if año_actual > 2025 or (año_actual == 2025 and mes_numero < mes_actual):
+
+                resultado = conexion_sqlite.consulta_ventas(inicio, fin)
+                if resultado and len(resultado) > 0:
+                    ventas_mensuales.append(resultado[0][0])
+                    nombres_meses.append(mes)
+                else:
+                    print(f"No hay datos para {mes}")
+
+        grafico_mensuales = ventas_mensuales
+    
+    except Exception as e:
+        print(f"Error al procesar los datos: {str(e)}")
+
+    # enero = conexion_sqlite.consulta_ventas('2025-01-02','2025-01-31')
+    # febrero = conexion_sqlite.consulta_ventas('2025-02-01','2025-02-31')
+    # marzo = conexion_sqlite.consulta_ventas('2025-03-01','2025-03-31')
+    # abril = conexion_sqlite.consulta_ventas('2025-04-01','2025-04-31')
+    # mayo = conexion_sqlite.consulta_ventas('2025-05-01','2025-05-31')
+    # junio = conexion_sqlite.consulta_ventas('2025-06-01','2025-06-31')
+    # julio = conexion_sqlite.consulta_ventas('2025-07-01','2025-07-31')
+    # agosto = conexion_sqlite.consulta_ventas('2025-08-01','2025-08-31')
+    # septiembre = conexion_sqlite.consulta_ventas('2025-09-01','2025-09-31')
+    # octubre = conexion_sqlite.consulta_ventas('2025-10-01','2025-10-31')
+    # noviembre = conexion_sqlite.consulta_ventas('2025-11-01','2025-11-31')
+    # diciembre = conexion_sqlite.consulta_ventas('2025-12-01','2025-12-31')
+
     grafico_tiendas = conexion_sqlite.index()
     babilon = grafico_tiendas.valores('BABILON')
     baralt = grafico_tiendas.valores('BARALT')        
@@ -37,7 +91,7 @@ def index():
     ventas = conexion_sqlite.consulta_ventas(str(fecha_diaria), str(fecha_diaria))
 
     grafico_usd = [babilon]
-    grafico_mensuales = [enero[0][0]]
+    # grafico_mensuales = [enero[0][0], febrero[0][0], marzo[0][0], abril[0][0], mayo[0][0], junio[0][0], julio[0][0], agosto[0][0], septiembre[0][0], octubre[0][0], noviembre[0][0], diciembre[0][0]]
     if 'username' in session:
 
             return render_template('index.html',
