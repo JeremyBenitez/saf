@@ -21,6 +21,9 @@ def get_db():
     conexion = sqlite3.connect(str(db_path))
     return conexion
 
+
+
+
 def get_db_db1():
     conexion = sqlite3.connect(str(db_path_bd1))
     return conexion
@@ -104,11 +107,6 @@ class index:
         self.data = [dict(zip(colums,row))for  row in rows]
         self.conexion.close()
         return  self.data
-
-a = index()
-
-valor =a.tienda_times('Baralt','2025-01-01','2025-02-28')
-print(valor)
 
 
 

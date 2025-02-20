@@ -32,4 +32,3 @@ def conat(a):
 semanas_variadas = conat(int(mes_date) - 1)
 
 
-print(semanas_variadas)
