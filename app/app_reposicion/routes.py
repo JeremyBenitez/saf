@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template,request,jsonify
 from ..querys_sqlite_data.database import get_db_connection
+
 app_reposicion = Blueprint('app_reposicion', __name__)
 
 @app_reposicion.route('/') 

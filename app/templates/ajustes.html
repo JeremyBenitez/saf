@@ -15,41 +15,13 @@
     <!-- Seccion de Buscar  -->
     <section id="search">
         <div class="container search-block p-3 row mx-auto justify-content-center text-center">
-
-            <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
-                <label for="concepto" class="label-style text-capitalize form-label">Tipo de Ajuste</label>
-                <div class="input-group date ">
-                    <!-- <input type="text" class="form-control p-3 " id="vehicle" placeholder="Select Car Group" /> -->
-                    <select class="form-select form-control p-3" id="concepto" aria-label="Default select example"
-                        style="background-image: none;">
-                        <option selected>Todos</option>
-                        <option value="1">Ajuste de Inventario</option>
-                        <option value="2">Ajuste de Merma por Producción</option>
-                        <option value="3">Ajuste de Reverso Nota devolución Compra</option>
-                        <option value="4">Beneficio al Trabajador</option>
-                        <option value="5">Cambio de Codigo</option>
-                        <option value="5">Cambio de la Unidad de Venta</option>
-                        <option value="6">Cargo por Ajuste de Inventario</option>
-                        <option value="7">Conteo Fisico</option>
-                        <option value="8">Descargo por Ajuste de Inevntario</option>
-                        <option value="9">Descargo por Anulación de Recepción</option>
-                        <option value="10">Reverso de Ajuste</option>
-                        <option value="11">Salida sin Efecto</option>
-                        <option value="12">Uso de Tienda</option>
-                        <option value="13">Cambio de Codigo</option>
-                    </select>
-                    <span class="search-icon-position position-absolute p-2">
-                        <i class='bx bx-bar-chart-square'></i>
-                    </span>
-                </div>
-            </div>
             <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
                 <label for="tienda" class="label-style text-capitalize form-label">Tiendas</label>
                 <div class="input-group date">
                     <!-- <input type="text" class="form-control p-3 " id="vehicle" placeholder="Select Car Group" /> -->
                     <select class="form-select form-control p-3" id="tienda" aria-label="Default select example"
                         style="background-image: none;">
-                        <option value="%">Todas</option>
+                        <option value="" disabled>Tiendas</option>
                         <option value="VAD10_KAPITANA">Kapitana</option>
                         <option value="VAD10_CATIA">Catia</option>
                         <option value="VAD10_CRUZVERDE">Cruz Verde</option>
@@ -65,29 +37,33 @@
                         <option value="VAD10_BABILON">Babilon</option>
                         <option value="VAD10_VALERA">Valera</option>
                         <option value="VAD10_UPATA">Upata</option>
+                        <option value="VAD10_CAPITAL01">Cemen</option>
                     </select>
                     <span class="search-icon-position position-absolute p-2">
-                        <i class='bx bxs-store'></i>
+                        <i class='bx bx-bar-chart-square'></i>
                     </span>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
                 <label for="pick-up-date" class="label-style text-capitalize form-label">Fecha Inicio: </label>
                 <div class="input-group date" id="">
-                    <input type="date" class="form-control p-3" id="inicial-date" />
+                    <input type="date" class="form-control p-3" id="startDate" />
 
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0">
                 <label for="return-date" class="label-style text-capitalize form-label">Fecha Fin: </label>
                 <div class="input-group date" id="">
-                    <input type="date" class="form-control p-3" id="final-date" />
+                    <input type="date" class="form-control p-3" id="endDate" />
 
                 </div>
             </div>
 
-            <div class="d-grid gap-2 mt-4" style="margin-top: 0%;">
-                <button class="btn btn-primary b" type="button" id="buscar">BUSCAR</button>
+            <div class="col-12 col-md-6 col-lg-3 mt-4 mt-lg-0 justify-content-center">
+                <label for="return-date" class="label-style text-capitalize form-label">Buscar</label>
+                <div class="input-group">
+                    <button class="btn btn-primary b" type="button" id="buscar"><i class='bx bx-search'></i></button>
+                </div>
             </div>
         </div>
     </section>
@@ -95,8 +71,10 @@
     <!-- Sección de Tarjetas -->
     <section class="help-featured-section theme-section">
         <div class="container">
-            <div class="text-center border-bottom pb-1 mb-3">
-                <h4>Resultados: <span id="cantidad">0</span></h4>
+            <div class="d-flex align-items-center justify-content-center border-bottom pb-1 mb-3">
+                <h5 class="me-3">Resultados: <span id="cantidad">0</span></h5>
+                <input type="text" placeholder="Buscar por Motivo" id="escribir" maxlength="15">
+            </div>            
             </div>
             <div class="row align-content-stretch" id="card-container"></div>
         </div>
@@ -107,22 +85,28 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="facturaModalLabel">Detalles de la Ficha:</h5>
+                    <h5 class="modal-title" id="facturaModalLabel">Detalles de la Factura</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
                     <p><strong>Fecha:</strong> <span id="fecha"></span></p>
                     <p><strong>Origen:</strong> <span id="origen"></span></p>
+                    <p><strong>Documento:</strong> <span id="codigo"></span></p>
                     <hr>
-                    <p><strong>Concepto:</strong> <span id="concepto"></span></p>
-                    <p><strong>Generado por:</strong> <span id="generadoPor"></span></p>
-                    <p><strong>Cantidad Artículos:</strong> <span id="cantidadArticulos"></span></p>
-                    <p><strong>Código:</strong> <span id="codigo"></span></p>
-                    <p><strong>Motivo Afectado:</strong> <span id="motivoAfectado"></span></p>
-                    <hr>
-                    <p><strong>Artículos:</strong></p>
-                    <div style="max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
-                        <ul id="listaArticulos"></ul>
+                    <p><strong>Detalles de los Artículos:</strong></p>
+                    <div style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Artículo</th>
+                                    <th>Cantidad</th>
+                                    <th>Total USD</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaArticulos">
+                                <!-- Aquí se insertarán los artículos dinámicamente -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -136,87 +120,116 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // Datos de prueba (simulando resultados)
-    const datos = [
-        { id: 1, motivo: "Salida sin Efecto", codigo: "0102", origen: "Tienda Kapitana" },
-        { id: 2, motivo: "Cambio de Código", codigo: "0302", origen: "Tienda Catia" },
-        { id: 3, motivo: "$80", codigo: "0405", origen: "Tienda Cabimas" },
-        { id: 4, motivo: "$500", codigo: "0708", origen: "Tienda Maturin" },
-        { id: 5, motivo: "$30", codigo: "0907", origen: "Tienda Cruz verde" }
-    ];
+// Hacer la función global
+async function mostrarFactura(documento) {
+    const tienda = document.getElementById('tienda').value;
+    const fecha_ini = document.getElementById('startDate').value;
+    const fecha_fin = document.getElementById('endDate').value;
 
-    // Contenedor donde se mostrarán las tarjetas
-    const cardContainer = document.getElementById("card-container");
-    document.getElementById("cantidad").textContent = datos.length;
+    if (!tienda || !fecha_ini || !fecha_fin) {
+        Swal.fire("Error", "Faltan datos para obtener la factura", "error");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/ajustes/detalles?documento=${encodeURIComponent(documento)}&tienda=${encodeURIComponent(tienda)}&fecha_ini=${encodeURIComponent(fecha_ini)}&fecha_fin=${encodeURIComponent(fecha_fin)}`);
+        const detalles = await response.json();
+
+        if (!response.ok || !detalles.length) {
+            Swal.fire("Error", "No se encontraron detalles para esta factura", "error");
+            return;
+        }
+
+        // Tomamos el primer objeto para llenar la información principal
+        const factura = detalles[0];
+
+        // Convertir fecha correctamente
+        const fecha = factura.f_fecha ? new Date(factura.f_fecha).toLocaleDateString() : "N/P";
+
+        document.getElementById("fecha").textContent = fecha;
+        document.getElementById("origen").textContent = factura.NombreTienda || "N/P";
+        document.getElementById("codigo").textContent = documento|| "N/P";
+
+        // Limpiar tabla antes de agregar nuevas filas
+        const tabla = document.getElementById("tablaArticulos");
+        tabla.innerHTML = "";
+
+        // Llenar la tabla con los artículos
+        detalles.forEach(detalle => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${detalle.c_CODARTICULO || "N/A"}</td>
+                <td>${detalle.n_CANTIDAD || "0"}</td>
+                <td>${(detalle.TotalUSD || 0).toFixed(2)}</td>
+            `;
+            tabla.appendChild(fila);
+        });
+
+        // Mostrar modal
+        new bootstrap.Modal(document.getElementById("facturaModal")).show();
+
+    } catch (error) {
+        console.error("Error al obtener datos de la API:", error);
+        Swal.fire("Error", "Hubo un problema al obtener los detalles", "error");
+    }
+}
+
+// Agregar el evento al cargar el DOM
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("buscar")?.addEventListener("click", async () => {
+        const tienda = document.getElementById('tienda').value;
+        const fecha_ini = document.getElementById('startDate').value;
+        const fecha_fin = document.getElementById('endDate').value;
+
+        if (!tienda || !fecha_ini || !fecha_fin) {
+            Swal.fire("Error", "Faltan datos para la búsqueda", "error");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/ajustes/aju?tienda=${encodeURIComponent(tienda)}&fecha_ini=${encodeURIComponent(fecha_ini)}&fecha_fin=${encodeURIComponent(fecha_fin)}`);
+            const data = await response.json();
+
+            if (response.ok) {
+
+                generarTarjetas(data);
+            } else {
+                Swal.fire("Error", "No se pudo obtener la información", "error");
+            }
+        } catch (error) {
+            console.error("Error en la llamada a la API:", error);
+            Swal.fire("Error", "Hubo un problema con la solicitud", "error");
+        }
+    });
 
     // Función para generar tarjetas dinámicamente
-    function generarTarjetas() {
+    function generarTarjetas(datos) {
+        const cardContainer = document.getElementById("card-container");
         cardContainer.innerHTML = "";
+        document.getElementById("cantidad").textContent = datos.length;
+
         datos.forEach(dato => {
             const card = document.createElement("div");
+            // Convertir fecha correctamente
+            const fecha1 = dato.d_FECHA ? new Date(dato.d_FECHA).toLocaleDateString() : "N/P";
+
             card.classList.add("item", "col-12", "col-md-6", "col-lg-3", "py-4", "p-md-4");
             card.innerHTML = `
                 <div class="item-inner shadow rounded-4 p-4">
-                    <a class="item-link" onclick="mostrarFactura(${dato.id})">
-                        <h4 class="item-heading">Motivo: ${dato.motivo}</h4>
-                        <h4 class="item-heading">Código: ${dato.codigo}</h4>
-                        <div class="item-desc text-center">
-                            <span class="rate-icon me-2"><i class='bx bx-store'></i></span>${dato.origen}
-                        </div>
+                    <a class="item-link" onclick="mostrarFactura('${dato.c_DOCUMENTO}')">
+                        <h4 class="item-heading">Motivo: ${dato.C_MOTIVO}</h4>
+                        <h4 class="item-heading">Documento: ${dato.c_DOCUMENTO}</h4>
                     </a>
+                    <div class="item-desc text-center">
+                        <span class="rate-icon me-2"><i class='bx bx-store'></i></span>${fecha1}
+                    </div>
                 </div>
             `;
             cardContainer.appendChild(card);
         });
     }
+});
 
-    // Función para obtener detalles de la API y mostrar en el modal
-    async function mostrarFactura(id) {
-        // Buscar los datos de la tarjeta seleccionada
-        const dato = datos.find(d => d.id === id);
-
-        // Simulación de una llamada a la API para obtener detalles adicionales
-        try {
-            // Simulando respuesta de API
-            const response = await fetch(`https://api.ejemplo.com/detalles?id=${id}`); 
-            const detalles = await response.json();
-
-            // Si no hay API real, usar datos de prueba
-            const datosSimulados = {
-                fecha: "2025-02-14",
-                concepto: "Compra de productos",
-                generadoPor: "Sistema",
-                cantidadArticulos: 3,
-                articulos: ["Artículo 1", "Artículo 2", "Artículo 3"]
-            };
-
-            // Mostrar datos en el modal
-            document.getElementById("fecha").textContent = detalles.fecha || datosSimulados.fecha;
-            document.getElementById("origen").textContent = dato.origen;
-            document.getElementById("concepto").textContent = detalles.concepto || datosSimulados.concepto;
-            document.getElementById("generadoPor").textContent = detalles.generadoPor || datosSimulados.generadoPor;
-            document.getElementById("cantidadArticulos").textContent = detalles.cantidadArticulos || datosSimulados.cantidadArticulos;
-            document.getElementById("codigo").textContent = dato.codigo;
-            document.getElementById("motivoAfectado").textContent = dato.motivo;
-
-            // Limpiar y agregar artículos
-            const listaArticulos = document.getElementById("listaArticulos");
-            listaArticulos.innerHTML = "";
-            (detalles.articulos || datosSimulados.articulos).forEach(articulo => {
-                const li = document.createElement("li");
-                li.textContent = articulo;
-                listaArticulos.appendChild(li);
-            });
-
-            // Mostrar modal
-            new bootstrap.Modal(document.getElementById("facturaModal")).show();
-        } catch (error) {
-            console.error("Error al obtener datos de la API", error);
-        }
-    }
-
-    // Inicializar tarjetas
-    generarTarjetas();
 </script>
 
 </body>
