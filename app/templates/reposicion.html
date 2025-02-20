@@ -39,7 +39,7 @@
         font-size: 1.5em;
     }
     table, tbody, td{
-        font-size: 0.94em;
+        font-size: 0.95em;
     }
     .card, h5{
         font-size: 0.94em;
@@ -147,6 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 const tableBody = document.getElementById("table-body");
+
                 const dias_ana = data[0].DiasAnalisis;
                 // Referenciamos el span y actualizamos su contenido
                 document.getElementById('ana').textContent = dias_ana;
@@ -164,9 +165,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     */
                     // Determinar el color de la barra de progreso
                     let colorClass = "bg-danger"; // Rojo por defecto
-                    if (item.Salidas > 30 && item.Salidas <= 70) {
+                    if (item.Salidas > 3 && item.Salidas <= 6) {
                         colorClass = "bg-primary"; // Azul
-                    } else if (item.Salidas > 70) {
+                    } else if (item.Salidas > 6) {
                         colorClass = "bg-success"; // Verde
                     }
 
@@ -183,8 +184,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             <td>${item.MontoSugeridoReposicion}</td>
                             <td>
                                 <div class="progress">
-                                    <div class="progress-bar ${colorClass}" role="progressbar" style="width: ${item.Salidas}%" " aria-valuemin="0" aria-valuemax="100">
-                                        ${item.Salidas}%
+                                    <div class="progress-bar ${colorClass}" 
+                                                role="progressbar" 
+                                                style="width: ${item.Salidas * 1.5}%"
+                                                aria-valuenow="${item.Salidas}"
+                                                aria-valuemin="0" 
+                                                aria-valuemax="10">
                                     </div>
                                 </div>
                             </td>
