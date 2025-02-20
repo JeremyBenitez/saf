@@ -67,8 +67,7 @@ def buscar_detalles():
 
         # Ejecutar el procedimiento almacenado con los parámetros
         query = 'sp_ConsultaTRInventarioAJU @FechaInicio = ?, @FechaFin = ?, @DBName = ?, @Documento = ?'
-        #cursor.execute(query, (fecha_ini, fecha_fin, tienda, documento))
-        cursor.execute(query, ('2025-02-10', '2025-02-10', 'VAD10_KAPITANA', '100100001777'))
+        cursor.execute(query, (fecha_ini, fecha_fin, tienda, documento))
 
         # Obtener los nombres de las columnas de la consulta
         columns = [column[0] for column in cursor.description]
