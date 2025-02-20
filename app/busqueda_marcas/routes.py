@@ -7,6 +7,9 @@ from ..querys_sqlite_data.database import departamentos, get_db_connection
 import requests
 from .tiendas import tiendas_completas, tiendas_simplificadas
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import os
+import json
+
 
 marcas_bp = Blueprint('marcas', __name__)
 
@@ -265,6 +268,22 @@ def veentas_departamentomultidb_bs():
 
 
 
+CACHE_FILE = "cache.json"
+
+def load_cache():
+    """Carga el contenido del archivo de caché si existe."""
+    if os.path.exists(CACHE_FILE):
+        with open(CACHE_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_cache(data):
+    """Guarda los datos en el archivo de caché."""
+    with open(CACHE_FILE, "w") as f:
+        json.dump(data, f)
+
+
+
 @marcas_bp.route('/consulta_general', methods=['GET', 'POST'])
 def consulta_general():
     try:
@@ -278,7 +297,17 @@ def consulta_general():
             "FechaFin": fecha_fin,
             "filtro": filtro
         }
-        
+
+        # Generar clave única para la caché (basada en la consulta)
+        cache_key = f"{fecha_inicio}_{fecha_fin}_{filtro}"
+
+        # Cargar la caché existente
+        cache = load_cache()
+
+        # Verificar si la consulta ya está en la caché
+        if cache_key in cache:
+            return jsonify(cache[cache_key])
+
         # Base URL para las otras APIs
         base_url = "http://10.21.5.99:5000"
 
@@ -309,6 +338,10 @@ def consulta_general():
             for future in as_completed(futures):
                 key, result = future.result()
                 results[key] = result
+
+        # Almacenar el resultado en la caché
+        cache[cache_key] = results
+        save_cache(cache)
 
         # Respuesta combinada
         return jsonify(results)

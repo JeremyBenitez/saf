@@ -6,7 +6,7 @@ from calendar import monthrange
 
 from ..querys_sqlite_data import conexion_sqlite
 
-
+"hola"
 
 fecha = datetime.now()
 fecha_diaria = fecha.date()
