@@ -121,7 +121,7 @@ def apigeneral():
             "sucursal":sucursal
         }
         # Base URL para las otras APIs
-        base_url = "http://192.168.2.103:5000"  
+        base_url = "http://10.21.5.99:5000"  
         
         # Endpoints a llamar
         endpoints = {
