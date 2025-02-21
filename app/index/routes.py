@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request,redirect,session,flash,url_for, jsonify
 from ..querys_sqlite_data import conexion_sqlite
 from datetime import datetime,timedelta
-import pandas as pd
 from calendar import monthrange
 from ..querys_sqlite_data import database
 from ..querys_sqlite_data import conexion_sqlite

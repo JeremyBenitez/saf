@@ -145,10 +145,6 @@ def veentas_departamento_genral():
 
 
 
-
-
-
-
 @marcas_bp.route('/ventasdepartamentosmultidb',methods=['GET', 'POST'])
 def veentas_departamentomultidb():
     try:
@@ -209,6 +205,9 @@ def veentas_departamentomultidb():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
 
 
 
