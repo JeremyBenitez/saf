@@ -34,18 +34,19 @@
     <!-- Departamento Más Vendido -->
     <div class="department-card velde">
       <div id="bestDepartmentDetails">
-        <h2 id="bestDepartmentName">{{ best_department }}</h2>
-        <p><strong>Ventas Totales en USD: </strong>{{ "{:,.2f}".format(n_ventas_best)}}</p>
-        <p><strong>Unidades Vendidas: </strong>{{n_transt_best|int}}</p>
+        <h2 id="bestDepartmentName"></h2>
+        <p><strong>Ventas Totales en USD: </strong></p>
+        <p><strong>Unidades Vendidas: </strong></p>
+
       </div>
     </div>
     
     <!-- Departamento Menos Vendido -->
     <div class="department-card rojo">
       <div id="worstDepartmentDetails">
-        <h2 id="worstDepartmentName">{{ worst_department }}</h2>
-        <p><strong>Ventas Totales en USD: </strong>{{ "{:,.2f}".format(n_ventas_worst)}}</p>
-        <p><strong>Unidades Vendidas: </strong>{{n_transt_worst|int}}</p>
+        <h2 id="worstDepartmentName"></h2>
+        <p><strong>Ventas Totales en USD: </strong></p>
+        <p><strong>Unidades Vendidas: </strong></p>
       </div>
     </div>
   </div>
@@ -61,93 +62,8 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>const data_grafico = {{data_grafico|tojson|safe}};</script>
-
-<!-- Data y Graficos -->
 
 
-<script>
-  const hoy = new Date();
-  const anio = hoy.getFullYear();
-  const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-  const dia = String(hoy.getDate()).padStart(2, '0');
-  const fechaHoy = `${anio}-${mes}-${dia}`;
-  
-  // Asignar la fecha de hoy como el valor máximo
-  document.getElementById("startDate").max = fechaHoy;
-  document.getElementById("endDate").max = fechaHoy;
-
-
-
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // Aquí va el código del gráfico
-    // Datos de prueba para el gráfico
-  //let data_grafico = data_grafico;
-
-const labels = [
-  'Ropa', 'Hogar', 'Calzado', 'Juguetes', 'Cuidado Personal',
-  'Comida', 'Ferreteria', 'Belleza', 'Accesorios', 'Automotriz',
-  'Productos de Limpieza', 'Oficina', 'Festejo', 'Deporte'
-];
-
-// Combina etiquetas y valores
-const combinedData = labels.map((label, index) => ({
-  label: label,
-  value: data_grafico[index]
-}));
-
-// Ordena por valor descendente
-combinedData.sort((a, b) => b.value - a.value);
-
-// Extrae las etiquetas y valores ordenados
-const sortedLabels = combinedData.map(item => item.label);
-const sortedData = combinedData.map(item => item.value);
-
-// Configuración del gráfico
-const config = {
-  type: 'bar',
-  data: {
-    labels: sortedLabels,
-    datasets: [{
-      label: 'Ventas por Categoría $',
-      data: sortedData,
-      backgroundColor: '#003366', // Color de fondo
-      borderColor: '#003366', // Color de borde
-      borderWidth: 1 
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-              stacked: true,
-              ticks: {
-                maxRotation: 45,
-                minRotation: 20,
-                font: {
-                  size: function () {
-                    // Obtener el ancho de la pantalla
-                    const chartWidth = window.innerWidth; 
-                    return chartWidth > 450 ? 12 : 7; // Ajustar a 10px si es mayor a 360px, sino 7px
-                  },
-                },
-              },
-            },
-      y: {
-        beginAtZero: true,
-        suggestedMin: 0,
-        suggestedMax: 25
-      }
-    }
-  }
-};
-
-// Inicializa el gráfico
-const chartContext = document.getElementById('salesChart').getContext('2d');
-const salesChart = new Chart(chartContext, config);
-  });
 </script>
 
 

@@ -37,6 +37,9 @@ def tasa(fi,fo):
     return data
 
 
+a  = tasa(str(fecha_diaria),str(fecha_diaria))
+print(a[0][6])
+
 
 def general_usd(fi,fo):
     coneccion =  get_db_connection()
