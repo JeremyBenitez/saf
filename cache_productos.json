@@ -1,0 +1,142 @@
+{
+    "filtro": "RP",
+    "valores_tiendas": {
+        "MATURIN": {
+            "total_USD": 1489.0738000000006,
+            "cantidad": 306.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS UNISEX LARGAS",
+                "codigo": "RPUS01800001",
+                "cantidad": 41.0
+            }
+        },
+        "VALERA": {
+            "total_USD": 969.1258999999995,
+            "cantidad": 177.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS UNISEX LARGAS",
+                "codigo": "RPUS01800001",
+                "cantidad": 12.0
+            }
+        },
+        "UPATA": {
+            "total_USD": 2267.8411000000015,
+            "cantidad": 388.0,
+            "producto_mas_vendido": {
+                "nombre": "FRANELA DE DAMA MARCAS VARIAS",
+                "codigo": "RPDA00200135",
+                "cantidad": 21.0
+            }
+        },
+        "CAGUA": {
+            "total_USD": 1580.6400999999992,
+            "cantidad": 275.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS DE DAMA CORTAS",
+                "codigo": "RPDA01800006",
+                "cantidad": 13.0
+            }
+        },
+        "GUACARA": {
+            "total_USD": 1561.9136000000008,
+            "cantidad": 204.0,
+            "producto_mas_vendido": {
+                "nombre": "FRANELA DE DAMA MARCAS VARIAS",
+                "codigo": "RPDA00200135",
+                "cantidad": 13.0
+            }
+        },
+        "VALENCIA": {
+            "total_USD": 1783.25,
+            "cantidad": 310.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS UNISEX LARGAS",
+                "codigo": "RPUS01800001",
+                "cantidad": 28.0
+            }
+        },
+        "CATIA": {
+            "total_USD": 1738.6641000000016,
+            "cantidad": 241.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS DE DAMA CORTAS",
+                "codigo": "RPDA01800013",
+                "cantidad": 25.0
+            }
+        },
+        "CRUZ VERDE": {
+            "total_USD": 2011.9997000000003,
+            "cantidad": 303.0,
+            "producto_mas_vendido": {
+                "nombre": "PANTALON ESCOLAR DE NINO POLIESTER",
+                "codigo": "RPUS00600005",
+                "cantidad": 26.0
+            }
+        },
+        "KAPITANA": {
+            "total_USD": 2122.427800000002,
+            "cantidad": 288.0,
+            "producto_mas_vendido": {
+                "nombre": "ROPA SURTIDA SHEIN",
+                "codigo": "RPUS13200001",
+                "cantidad": 22.0
+            }
+        },
+        "PROPATRIA": {
+            "total_USD": 1665.7849000000012,
+            "cantidad": 243.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS UNISEX CORTAS",
+                "codigo": "RPUS01800002",
+                "cantidad": 13.0
+            }
+        },
+        "CABIMAS": {
+            "total_USD": 1892.683000000001,
+            "cantidad": 341.0,
+            "producto_mas_vendido": {
+                "nombre": "ROPA SURTIDA SHEIN",
+                "codigo": "RPUS13200001",
+                "cantidad": 26.0
+            }
+        },
+        "BABILON": {
+            "total_USD": 1989.0592000000006,
+            "cantidad": 441.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS UNISEX CORTE BAJO",
+                "codigo": "RPUS01800003",
+                "cantidad": 47.0
+            }
+        },
+        "CABUDARE": {
+            "total_USD": 1239.0606999999995,
+            "cantidad": 328.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS UNISEX LARGAS",
+                "codigo": "RPUS01800001",
+                "cantidad": 52.0
+            }
+        },
+        "BARALT": {
+            "total_USD": 969.0887999999997,
+            "cantidad": 149.0,
+            "producto_mas_vendido": {
+                "nombre": "CHEMISE ESCOLAR BLANCA POLIESTER Y ALGODON DIDACTA",
+                "codigo": "RPUS05700006",
+                "cantidad": 11.0
+            }
+        },
+        "GUANARE": {
+            "total_USD": 914.5764999999993,
+            "cantidad": 168.0,
+            "producto_mas_vendido": {
+                "nombre": "MEDIAS UNISEX CORTAS",
+                "codigo": "RPUS01800002",
+                "cantidad": 11.0
+            }
+        }
+    },
+    "total_usd": 24195.18919999971,
+    "total_cantidad": 4162.0
+}

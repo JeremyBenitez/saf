@@ -30,13 +30,13 @@ def producto_en_tendencia():
         data = [dict(zip(columns, row)) for row in rows]
         conexion.close()
         
-        suma_por_tienda = defaultdict(lambda: {"total_USD": 0.0, "cantidad": 0.0, "producto_mas_vendido": {"nombre": None, "cantidad": 0}})
+        suma_por_tienda = defaultdict(lambda: {"total_USD": 0.0, "cantidad": 0.0, "producto_mas_vendido": {"nombre": None, "cantidad": 0, "codigo":None}})
         mapa_tiendas = dict(zip(tiendas_completas, tiendas_simplificadas))
         filtro = json_data['filtro']
         total_usd = 0.0
         total_cantidad = 0.0
         
-        productos_por_tienda = defaultdict(lambda: defaultdict(float))
+        productos_por_tienda = defaultdict(lambda: defaultdict(lambda: {"cantidad": 0.0, "codigo": "N/A"}))
         
         for registro in data:
             if registro.get("c_Departamento") == filtro:
@@ -53,23 +53,27 @@ def producto_en_tendencia():
                 except (ValueError, TypeError):
                     cantidad_flotante = 0.0
                 
-                producto = registro.get("cod_principal", "Desconocido")
+                producto = registro.get("c_Descri", "Desconocido")
+                codigo_articulo = registro.get("cod_principal", "N/A")
                 
                 suma_por_tienda[tienda_simplificada]["total_USD"] += valor_flotante
                 suma_por_tienda[tienda_simplificada]["cantidad"] += cantidad_flotante
-                productos_por_tienda[tienda_simplificada][producto] += cantidad_flotante
+                productos_por_tienda[tienda_simplificada][producto]["cantidad"] += cantidad_flotante
+                productos_por_tienda[tienda_simplificada][producto]['codigo'] = codigo_articulo
+                
                 
                 total_usd += valor_flotante
                 total_cantidad += cantidad_flotante
         
         for tienda, productos in productos_por_tienda.items():
             if productos:
-                producto_mas_vendido = max(productos, key=productos.get)
+                producto_mas_vendido = max(productos, key=lambda p: productos[p]["cantidad"])
                 suma_por_tienda[tienda]["producto_mas_vendido"] = {
                     "nombre": producto_mas_vendido,
-                    "cantidad": productos[producto_mas_vendido]
+                    "codigo": productos[producto_mas_vendido]["codigo"],
+                    "cantidad": productos[producto_mas_vendido]["cantidad"]
                 }
-        
+
         return jsonify({
             "filtro": filtro,
             "valores_tiendas": dict(suma_por_tienda),
