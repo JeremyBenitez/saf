@@ -116,6 +116,7 @@
             flex-direction: column;
             justify-content: space-between;
             height: 100%;
+            cursor: pointer;
         }
         
         .department-icon {
@@ -311,119 +312,123 @@
         .departments-grid .department-card:nth-child(17) { animation-delay: 0.9s; }
         .departments-grid .department-card:nth-child(18) { animation-delay: 0.95s; }
         
-        /* Responsive */
-        @media (max-width: 992px) {
-            .departments-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            }
-            
-            h1 {
-                font-size: 2.8rem;
-            }
-        }
+    
         
-        @media (max-width: 768px) {
-            .departments-grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            }
-            
-            h1 {
-                font-size: 2.4rem;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .departments-grid {
-                grid-template-columns: 1fr;
-                max-width: 320px;
-                margin: 0 auto;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            body {
-                padding: 1rem 0;
-            }
-            
-            .container {
-                padding: 0 1rem;
-            }
-        }
+/* Ajustes responsivos para las tarjetas */
+@media (max-width: 1200px) {
+    .department-card {
+        height: 160px; /* Reducir la altura en pantallas medianas */
+    }
+}
 
-        /* Estilos para el modal a pantalla completa */
-        .modal-fullscreen {
-            width: 100vw;
-            max-width: none;
-            height: 100vh;
-            margin: 0;
-        }
+@media (max-width: 992px) {
+    .department-card {
+        height: 150px; /* Reducir la altura en tablets */
+    }
+}
 
-        .modal-fullscreen .modal-dialog {
-            width: 100%;
-            max-width: none;
-            height: 100%;
-            margin: 0;
-        }
+@media (max-width: 768px) {
+    .department-card {
+        height: 140px; /* Reducir la altura en pantallas pequeñas */
+    }
+}
 
-        .modal-fullscreen .modal-content {
-            height: 100%;
-            border-radius: 0;
-            border: none;
-        }
+@media (max-width: 576px) {
+    .department-card {
+        height: 130px; /* Reducir la altura en móviles */
+    }
+}
 
-        /* Estilos para el cuerpo del modal */
-        .modal-body {
-            overflow-y: auto; /* Permitir scroll si el contenido es muy largo */
-            padding: 20px;
-        }
+/* Ajustes responsivos para el texto */
+.department-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.5rem;
+}
 
-        /* Estilos para las tarjetas de tiendas */
-        .store-card {
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+@media (max-width: 1200px) {
+    .department-name {
+        font-size: 1.3rem; /* Reducir el tamaño de fuente en pantallas grandes */
+    }
+}
 
-        .store-card-header {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-bottom: 1px solid #ddd;
-            font-weight: bold;
-        }
+@media (max-width: 992px) {
+    .department-name {
+        font-size: 1.2rem; /* Reducir el tamaño de fuente en tablets */
+    }
+}
 
-        .store-card-body {
-            padding: 1rem;
-        }
+@media (max-width: 768px) {
+    .department-name {
+        font-size: 1.1rem; /* Reducir el tamaño de fuente en pantallas pequeñas */
+    }
+}
 
-        .store-card-body p {
-            margin-bottom: 0.5rem;
-        }
+@media (max-width: 576px) {
+    .department-name {
+        font-size: 1rem; /* Reducir el tamaño de fuente en móviles */
+    }
+}
 
-        /* Estilos para el título del modal */
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+/* Ajustes responsivos para el contenedor de tarjetas */
+.departments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    justify-content: center;
+}
 
-        /* Estilos para el botón de cerrar */
-        .btn-close-modal {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-        }
+@media (max-width: 1200px) {
+    .departments-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* 3 tarjetas por línea en pantallas grandes */
+    }
+}
 
-        .btn-close-modal:hover {
-            background-color: #5a6268;
-        }
+@media (max-width: 992px) {
+    .departments-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 3 tarjetas por línea en tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .departments-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 2 tarjetas por línea en pantallas pequeñas */
+    }
+}
+
+@media (max-width: 576px) {
+    .departments-grid {
+        grid-template-columns: 1fr; /* 1 tarjeta por línea en móviles */
+    }
+}
+
+/* Estilos para la sección "Top de los 20 artículos más vendidos" */
+.top-section {
+    cursor: pointer; /* Cursor pointer para indicar que es cliclable */
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.top-section:hover {
+    background: linear-gradient(135deg, #ffd700, #ff4500); /* Degradado de amarillo a rojo */
+    color: white; /* Texto blanco para contrastar con el fondo */
+    transform: translateY(-2px); /* Efecto de levitación */
+}
+
+.top-section i {
+    color: #ff4500; /* Color rojo para el icono de fuego */
+    transition: color 0.3s ease;
+}
+
+.top-section:hover i {
+    color: white; /* Cambiar el color del icono a blanco en hover */
+}
+
+.top-section p {
+    margin-bottom: 0; /* Eliminar margen inferior del párrafo */
+}
 
     </style>
 </head>
@@ -757,7 +762,6 @@
                 });
             }
 
-            // Función para mostrar los detalles del departamento en el modal
             function displayDepartmentDetails(departmentCode, response) {
                 // Limpiar el contenedor de tiendas
                 $('#modal-stores-container').empty();
@@ -775,19 +779,19 @@
                     });
 
                     // Iterar sobre cada tienda y crear una tarjeta para cada una
-                    tiendas.forEach(tienda => {
+                    tiendas.forEach((tienda, index) => {
                         const datosTienda = response.valores_tiendas[tienda];
                         const productoMasVendido = datosTienda.producto_mas_vendido || {};
                         
                         // Crear una tarjeta para la tienda con los datos formateados
                         const tiendaCard = `
-                            <div class="col-md-4">
-                                <div class="card mb-4 shadow-sm" style="margin: 10px;"> <!-- Añadimos margen externo -->
+                            <div class="col-md-3">
+                                <div class="card mb-4 shadow-sm" style="margin: 10px;">
                                     <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0">${formatTiendaName(tienda)}</h5>
                                         <i class="fas fa-store"></i> <!-- Icono de tienda -->
                                     </div>
-                                    <div class="card-body p-4"> <!-- Añadimos padding interno -->
+                                    <div class="card-body p-4">
                                         <div class="d-flex flex-column gap-3">
                                             <!-- Total vendido (de todo el departamento) -->
                                             <div class="d-flex align-items-center gap-2">
@@ -824,6 +828,14 @@
                                                     <p class="mb-0 fw-bold">${numberWithCommas(productoMasVendido.cantidad || 0)} unidades</p>
                                                 </div>
                                             </div>
+
+                                            <!-- Sección "Top de los 20 artículos más vendidos" -->
+                                            <div class="d-flex align-items-center gap-2 top-section" onclick="openTop20('${departmentCode}')">
+                                                <i class="fas fa-fire-alt text-danger"></i> <!-- Icono de fuego mejorado -->
+                                                <div>
+                                                    <p class="mb-0 text-muted">Top 20 artículos más vendidos</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -837,6 +849,12 @@
                     // Si no hay datos, mostrar un mensaje
                     $('#modal-stores-container').html('<div class="alert alert-warning">No hay datos disponibles para este departamento.</div>');
                 }
+            }
+
+            // Función para manejar el clic en la sección "Top de los 20 artículos más vendidos"
+            function openTop20(departmentCode) {
+                alert(`Abriendo el Top 20 del departamento: ${departmentCode}`);
+                // Aquí puedes agregar la lógica para abrir un modal o redirigir a otra vista
             }
 
             // Función para formatear el nombre de la tienda (primera letra en mayúscula)
