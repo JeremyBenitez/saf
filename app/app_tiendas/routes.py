@@ -60,9 +60,11 @@ def kapitana():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -172,9 +174,11 @@ def baralt():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -286,9 +290,11 @@ def cruz_verde():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -400,9 +406,11 @@ def catia():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -513,9 +521,11 @@ def propatria():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -626,9 +636,11 @@ def guanare():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -741,9 +753,11 @@ def cagua():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -855,9 +869,11 @@ def barquisimeto():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -971,9 +987,11 @@ def guacara():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -1082,9 +1100,11 @@ def cabudare():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -1195,9 +1215,11 @@ def upata():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -1310,9 +1332,11 @@ def cabimas():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -1426,9 +1450,11 @@ def maturin():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -1541,9 +1567,11 @@ def valera():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -1658,9 +1686,11 @@ def valencia():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:
@@ -1773,9 +1803,11 @@ def tiendacementerio():
 
 # Convertir las fechas de semanas_variadas en rangos de fechas
     rango_semanas = [
-        (f'{año}-{mes_actual}-{semanas_variadas[semana][0]:02d}', f'{año}-{mes_actual}-{semanas_variadas[semana][-1]:02d}')
-        for semana in range(5)
-    ]
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
     # Iterar sobre los datos en grafico_mensuales
     for j in grafico_mensuales:

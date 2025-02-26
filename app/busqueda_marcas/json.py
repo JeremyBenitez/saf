@@ -1,59 +1,150 @@
-datos = {
+datos = [{
+  "filtro": "RP",
+  "total_cantidad": 121668.0,
+  "total_usd": 675291.7255999972,
+  "valores_tiendas": {
     "BABILON": {
-      "total": 3251.5584999999946
+      "cantidad": 9220.0,
+      "producto_mas_vendido": {
+        "cantidad": 477.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 50010.35400000006
     },
     "BARALT": {
-      "total": 1568.3679999999981
+      "cantidad": 3796.0,
+      "producto_mas_vendido": {
+        "cantidad": 176.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 21205.152200000008
     },
     "CABIMAS": {
-      "total": 3450.593799999995
+      "cantidad": 8993.0,
+      "producto_mas_vendido": {
+        "cantidad": 662.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 48179.280900000034
     },
     "CABUDARE": {
-      "total": 2216.0284999999985
+      "cantidad": 7380.0,
+      "producto_mas_vendido": {
+        "cantidad": 483.0,
+        "codigo": "RPCA01800012",
+        "nombre": "MEDIAS DE CABALLERO CORTAS"
+      },
+      "total_USD": 38103.859300000004
     },
     "CAGUA": {
-      "total": 3453.151699999993
+      "cantidad": 8888.0,
+      "producto_mas_vendido": {
+        "cantidad": 392.0,
+        "codigo": "RPCA01800012",
+        "nombre": "MEDIAS DE CABALLERO CORTAS"
+      },
+      "total_USD": 48269.71530000005
     },
     "CATIA": {
-      "total": 3337.7469999999958
+      "cantidad": 8211.0,
+      "producto_mas_vendido": {
+        "cantidad": 460.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 49614.99909999997
     },
     "CRUZ VERDE": {
-      "total": 3585.0838999999946
+      "cantidad": 7448.0,
+      "producto_mas_vendido": {
+        "cantidad": 303.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 47488.17450000002
     },
     "GUACARA": {
-      "total": 3014.902599999996
+      "cantidad": 6340.0,
+      "producto_mas_vendido": {
+        "cantidad": 642.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 39176.88970000007
     },
     "GUANARE": {
-      "total": 2158.721599999999
+      "cantidad": 6732.0,
+      "producto_mas_vendido": {
+        "cantidad": 410.0,
+        "codigo": "RPDA01800013",
+        "nombre": "MEDIAS DE DAMA CORTAS"
+      },
+      "total_USD": 33933.266
     },
     "KAPITANA": {
-      "total": 5020.985899999992
+      "cantidad": 10334.0,
+      "producto_mas_vendido": {
+        "cantidad": 647.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 63607.86480000004
     },
     "MATURIN": {
-      "total": 4886.567899999992
+      "cantidad": 11573.0,
+      "producto_mas_vendido": {
+        "cantidad": 904.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 64715.395800000166
     },
     "PROPATRIA": {
-      "total": 3970.468599999993
+      "cantidad": 8269.0,
+      "producto_mas_vendido": {
+        "cantidad": 352.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 45720.0303000001
     },
     "UPATA": {
-      "total": 3443.714999999995
+      "cantidad": 9760.0,
+      "producto_mas_vendido": {
+        "cantidad": 513.0,
+        "codigo": "RPUS13200001",
+        "nombre": "ROPA SURTIDA SHEIN"
+      },
+      "total_USD": 44538.08670000006
     },
     "VALENCIA": {
-      "total": 3602.363599999994
+      "cantidad": 9036.0,
+      "producto_mas_vendido": {
+        "cantidad": 712.0,
+        "codigo": "RPNO00200038",
+        "nombre": "FRANELA DE NINO 4"
+      },
+      "total_USD": 52322.88760000011
     },
     "VALERA": {
-      "total": 2108.849299999998
+      "cantidad": 5688.0,
+      "producto_mas_vendido": {
+        "cantidad": 212.0,
+        "codigo": "RPUS01800001",
+        "nombre": "MEDIAS UNISEX LARGAS"
+      },
+      "total_USD": 28405.769400000005
     }
   }
+}]
 
 
 
-total = []
-for i in datos.values():
-
-   total.append(i['total'])
-
-print(sum(total))
 
 
-#49069.10589999993
+ordenado_por_cantidad = dict(sorted(datos[0]['valores_tiendas'].items(), key=lambda x: x[1]['cantidad'], reverse=True))
+print(ordenado_por_cantidad)
+  
