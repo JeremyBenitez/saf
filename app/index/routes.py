@@ -92,28 +92,18 @@ def index():
     grafico_usd = [babilon]
     # grafico_mensuales = [enero[0][0], febrero[0][0], marzo[0][0], abril[0][0], mayo[0][0], junio[0][0], julio[0][0], agosto[0][0], septiembre[0][0], octubre[0][0], noviembre[0][0], diciembre[0][0]]
 
-    ta = database.tasa(str(fecha_diaria),str(fecha_diaria))
-    if ta == []:
-        ta = database.tasa('2025-01-03','2025-01-03')
+    ta = database.tasa()
+    
     if 'username' in session:
 
             return render_template('index.html',
                                 username = session.get('username'),
-
-
                                 total_ventas = ventas[0][0],
                                 total_bs = ventas[0][1],
                                 cashea_total = ventas[0][2],
                                 efectivo_total = ventas[0][3],
-                                tasa_dia = ta[0][6],
-                                grafico_tiendas = [babilon[-1][0],
-                                                    baralt[-1][0],
-                                                    cabudare[-1][0],
-                                                    cagua[-1][0],
-                                                    cabimas[-1][0],
-                                                    catia[-1][0],
-                                                    cruz_verde[-1][0],
-                                                    guacara[-1][0],
+                                tasa_dia = ta[0][0],
+                                grafico_tiendas = [babilon[-1][0], baralt[-1][0],cabudare[-1][0],cagua[-1][0],cabimas[-1][0],catia[-1][0], cruz_verde[-1][0],guacara[-1][0],
                                                     guanare[-1][0],
                                                     kapitana[-1][0],
                                                     maturin[-1][0],
@@ -122,17 +112,7 @@ def index():
                                                     valencia[-1][0],
                                                     valera[-1][0]],
 
-
-                                grafico_trans = [babilon[-1][1],
-                                                    baralt[-1][1],
-                                                    cabudare[-1][1],
-                                                    cagua[-1][1],
-                                                    cabimas[-1][1],
-                                                    catia[-1][1],
-                                                    cruz_verde[-1][1],
-                                                    guacara[-1][1],
-                                                    guanare[-1][1],
-                                                    kapitana[-1][1],
+                               grafico_trans = [babilon[-1][1], baralt[-1][1], cabudare[-1][1], cagua[-1][1],cabimas[-1][1], catia[-1][1],cruz_verde[-1][1], guacara[-1][1],guanare[-1][1],kapitana[-1][1],
                                                     maturin[-1][1],
                                                     propatria[-1][1],
                                                     upata[-1][1],

@@ -28,17 +28,17 @@ def get_db_connection():
 #VAlORES DE TIENDA KAPITANA
 
 
-def tasa(fi,fo):
+def tasa():
     coneccion =  get_db_connection()
     pointer = coneccion.cursor()
-    pointer.execute('ObtenerHistoricoMonedasUSD @FechaInicio = ?, @FechaFin = ?',fi,fo)
+    pointer.execute("select n_factor from MA_MONEDAS where c_codmoneda in ('USD')")
     data = pointer.fetchall()
     coneccion.close()
     return data
 
 
-a  = tasa(str(fecha_diaria),str(fecha_diaria))
-print(a[0][6])
+
+
 
 
 def general_usd(fi,fo):

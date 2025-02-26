@@ -129,17 +129,15 @@ def veentas_departamento_genral():
         data = request.json
         conexion = get_db_connection()
         cursor = conexion.cursor()
-        cursor.execute("sp_ReporteDepartamento_GENERAL @FechaInicio = ?, @FechaFin = ? , @Departamento  = ? "
-                       ,(data['FechaInicio'],data['FechaFin'],data['c_departamento']))              
+        cursor.execute("sp_ConsultaInventarioMultiDB2 @FechaInicio = ?, @FechaFin = ? "
+                       ,(data['FechaInicio'],data['FechaFin']))              
         columns = [column[0] for column in cursor.description]
         rows = cursor.fetchall()
         data = [dict(zip(columns, row)) for row in rows]
         conexion.close()
         total = []
-        for i in data:
-            valor = int(i['TOTALUSD'])
-            total.append(valor)
-        return jsonify({"Total_ventas_departamento":sum(total)})
+        
+        return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

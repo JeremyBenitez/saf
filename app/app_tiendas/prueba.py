@@ -1,276 +1,6 @@
 import calendar
 
-data  =[
-  {
-    'ID': 1,
-    'V_USD': 7615.370278685367,
-    'V_BS': 396227.7155999984,
-    'V_CSH': 1275.92811839323,
-    'V_EFEC': 2545.820219104363,
-    'n_trasacciones': 1309,
-    'FECHA': '2025-01-02'
-  },
-  {
-    'ID': 2,
-    'V_USD': 9071.408963287047,
-    'V_BS': 476883.9691999952,
-    'V_CSH': 1811.1729123074,
-    'V_EFEC': 4028.144911546509,
-    'n_trasacciones': 1788,
-    'FECHA': '2025-01-03'
-  },
-  {
-    'ID': 3,
-    'V_USD': 10329.333657979845,
-    'V_BS': 543013.0703999948,
-    'V_CSH': 1823.97717329275,
-    'V_EFEC': 3894.547932280768,
-    'n_trasacciones': 2096,
-    'FECHA': '2025-01-04'
-  },
-  {
-    'ID': 4,
-    'V_USD': 6373.379151607382,
-    'V_BS': 335048.5419999993,
-    'V_CSH': 933.348487730645,
-    'V_EFEC': 3406.7477953205243,
-    'n_trasacciones': 1273,
-    'FECHA': '2025-01-05'
-  },
-  {
-    'ID': 5,
-    'V_USD': 8243.825862659312,
-    'V_BS': 433377.9255999974,
-    'V_CSH': 1401.27658360281,
-    'V_EFEC': 3733.905078942362,
-    'n_trasacciones': 1457,
-    'FECHA': '2025-01-06'
-  },
-  {
-    'ID': 6,
-    'V_USD': 6061.417958875684,
-    'V_BS': 321315.7659999996,
-    'V_CSH': 1308.0752688172,
-    'V_EFEC': 3382.5011507262775,
-    'n_trasacciones': 1107,
-    'FECHA': '2025-01-07'
-  },
-  {
-    'ID': 7,
-    'V_USD': 5058.2751912568265,
-    'V_BS': 268442.66440000053,
-    'V_CSH': 993.63538722442,
-    'V_EFEC': 1573.0561145656684,
-    'n_trasacciones': 1040,
-    'FECHA': '2025-01-08'
-  },
-  {
-    'ID': 8,
-    'V_USD': 1877.688385885886,
-    'V_BS': 100043.2372,
-    'V_CSH': 277.712087087087,
-    'V_EFEC': 687.3907432432433,
-    'n_trasacciones': 440,
-    'FECHA': '2025-01-09'
-  },
-  {
-    'ID': 9,
-    'V_USD': 1468.9175858867222,
-    'V_BS': 79101.212,
-    'V_CSH': 266.84661095636,
-    'V_EFEC': 411.98867966573806,
-    'n_trasacciones': 249,
-    'FECHA': '2025-01-10'
-  },
-  {
-    'ID': 10,
-    'V_USD': 5835.59401299907,
-    'V_BS': 314246.7375999992,
-    'V_CSH': 974.493407613742,
-    'V_EFEC': 2640.6643639740014,
-    'n_trasacciones': 1208,
-    'FECHA': '2025-01-11'
-  },
-  {
-    'ID': 11,
-    'V_USD': 4464.876857938719,
-    'V_BS': 240433.61880000072,
-    'V_CSH': 887.768802228412,
-    'V_EFEC': 2258.4540835654593,
-    'n_trasacciones': 1066,
-    'FECHA': '2025-01-12'
-  },
-  {
-    'ID': 12,
-    'V_USD': 4904.459751160627,
-    'V_BS': 264105.1576000005,
-    'V_CSH': 858.317363045497,
-    'V_EFEC': 2571.516642525534,
-    'n_trasacciones': 1064,
-    'FECHA': '2025-01-13'
-  },
-  {
-    'ID': 13,
-    'V_USD': 5688.147193763916,
-    'V_BS': 306477.3707999991,
-    'V_CSH': 669.800668151448,
-    'V_EFEC': 2284.179740163326,
-    'n_trasacciones': 1058,
-    'FECHA': '2025-01-14'
-  },
-  {
-    'ID': 27,
-    'V_USD': 6706.026426982945,
-    'V_BS': 361857.18600000074,
-    'V_CSH': 1113.6097108969607,
-    'V_EFEC': 2888.872868791698,
-    'n_trasacciones': 1280,
-    'FECHA': '2025-01-15'
-  },
-  {
-    'ID': 28,
-    'V_USD': 6612.454015081849,
-    'V_BS': 359519.1247999996,
-    'V_CSH': 1187.6418981055726,
-    'V_EFEC': 2245.395195880081,
-    'n_trasacciones': 1475,
-    'FECHA': '2025-01-16'
-  },
-  {
-    'ID': 29,
-    'V_USD': 9061.641015339657,
-    'V_BS': 496215.46200000204,
-    'V_CSH': 1728.1409788166543,
-    'V_EFEC': 2293.0339152666184,
-    'n_trasacciones': 1908,
-    'FECHA': '2025-01-17'
-  },
-  {
-    'ID': 30,
-    'V_USD': 13683.063221329443,
-    'V_BS': 749284.542000001,
-    'V_CSH': 3191.0354273192106,
-    'V_EFEC': 4161.542140248356,
-    'n_trasacciones': 2615,
-    'FECHA': '2025-01-18'
-  },
-  {
-    'ID': 31,
-    'V_USD': 6823.560189919646,
-    'V_BS': 373658.15600000205,
-    'V_CSH': 1298.4605551497446,
-    'V_EFEC': 2827.5323301680064,
-    'n_trasacciones': 1373,
-    'FECHA': '2025-01-19'
-  },
-  {
-    'ID': 32,
-    'V_USD': 6443.82788563103,
-    'V_BS': 353830.58919999877,
-    'V_CSH': 1186.602986705518,
-    'V_EFEC': 3088.037974867966,
-    'n_trasacciones': 1398,
-    'FECHA': '2025-01-20'
-  },
-  {
-    'ID': 34,
-    'V_USD': 4478.3646844880905,
-    'V_BS': 246265.27399999922,
-    'V_CSH': 908.1136570285506,
-    'V_EFEC': 2315.3942607746862,
-    'n_trasacciones': 938,
-    'FECHA': '2025-01-21'
-  },
-  {
-    'ID': 35,
-    'V_USD': 5126.170893309228,
-    'V_BS': 283477.2504,
-    'V_CSH': 886.1537070524415,
-    'V_EFEC': 1663.352405063291,
-    'n_trasacciones': 1034,
-    'FECHA': '2025-01-22'
-  },
-  {
-    'ID': 36,
-    'V_USD': 4619.593902439019,
-    'V_BS': 257588.55600000065,
-    'V_CSH': 669.9103299856527,
-    'V_EFEC': 1724.4609110473455,
-    'n_trasacciones': 1005,
-    'FECHA': '2025-01-23'
-  },
-  {
-    'ID': 37,
-    'V_USD': 5935.641677327646,
-    'V_BS': 334057.9136000001,
-    'V_CSH': 845.4783226723525,
-    'V_EFEC': 1441.4075550817342,
-    'n_trasacciones': 1327,
-    'FECHA': '2025-01-24'
-  },
-  {
-    'ID': 38,
-    'V_USD': 9376.554335465526,
-    'V_BS': 527712.4779999967,
-    'V_CSH': 1760.5245202558633,
-    'V_EFEC': 3604.007803837953,
-    'n_trasacciones': 2076,
-    'FECHA': '2025-01-25'
-  },
-  {
-    'ID': 39,
-    'V_USD': 5508.805167022031,
-    'V_BS': 310035.5547999991,
-    'V_CSH': 1052.269012082445,
-    'V_EFEC': 2198.5046126510306,
-    'n_trasacciones': 1019,
-    'FECHA': '2025-01-26'
-  },
-  {
-    'ID': 40,
-    'V_USD': 4685.2215710503115,
-    'V_BS': 265417.80200000055,
-    'V_CSH': 736.9853486319505,
-    'V_EFEC': 2279.089214474845,
-    'n_trasacciones': 1103,
-    'FECHA': '2025-01-27'
-  },
-  {
-    'ID': 41,
-    'V_USD': 4615.850742173754,
-    'V_BS': 262457.27319999976,
-    'V_CSH': 639.4145269081956,
-    'V_EFEC': 2371.6476820260286,
-    'n_trasacciones': 1275,
-    'FECHA': '2025-01-28'
-  },
-  {
-    'ID': 42,
-    'V_USD': 4992.218513089001,
-    'V_BS': 286054.12080000096,
-    'V_CSH': 572.5905759162305,
-    'V_EFEC': 1617.6804607329843,
-    'n_trasacciones': 1112,
-    'FECHA': '2025-01-29'
-  },
-  {
-    'ID': 43,
-    'V_USD': 7072.824199337861,
-    'V_BS': 405909.38079999894,
-    'V_CSH': 1924.6208398675724,
-    'V_EFEC': 1899.0336365220423,
-    'n_trasacciones': 1347,
-    'FECHA': '2025-01-30'
-  },
-  {
-    'ID': 44,
-    'V_USD': 7144.358557874757,
-    'V_BS': 414158.4655999994,
-    'V_CSH': 1268.773503536312,
-    'V_EFEC': 1728.8031671554252,
-    'n_trasacciones': 1772,
-    'FECHA': '2025-01-31'
-  },
+data = [
   {
     'ID': 45,
     'V_USD': 10534.43484560979,
@@ -435,35 +165,140 @@ data  =[
   },
   {
     'ID': 63,
-    'V_USD': 3150.18633000965,
-    'V_BS': 195878.58600000045,
-    'V_CSH': 446.55725313605666,
-    'V_EFEC': 944.9260791251207,
-    'n_trasacciones': 716,
+    'V_USD': 5684.839684786108,
+    'V_BS': 353483.33159999986,
+    'V_CSH': 949.3454486973301,
+    'V_EFEC': 1889.8025667417176,
+    'n_trasacciones': 1318,
     'FECHA': '2025-02-19'
+  },
+  {
+    'ID': 64,
+    'V_USD': 5887.036000639895,
+    'V_BS': 367998.62040000036,
+    'V_CSH': 893.4317709166534,
+    'V_EFEC': 1764.7784354503274,
+    'n_trasacciones': 1236,
+    'FECHA': '2025-02-20'
+  },
+  {
+    'ID': 65,
+    'V_USD': 6516.229438380001,
+    'V_BS': 411890.8627999974,
+    'V_CSH': 1457.1256130359122,
+    'V_EFEC': 1624.8383863312765,
+    'n_trasacciones': 1404,
+    'FECHA': '2025-02-21'
+  },
+  {
+    'ID': 66,
+    'V_USD': 11393.076260085441,
+    'V_BS': 720156.3503999966,
+    'V_CSH': 2456.2629330802088,
+    'V_EFEC': 3124.51190001582,
+    'n_trasacciones': 2383,
+    'FECHA': '2025-02-22'
+  },
+  {
+    'ID': 67,
+    'V_USD': 6414.135858250277,
+    'V_BS': 405437.52759999793,
+    'V_CSH': 1371.5562411010915,
+    'V_EFEC': 2391.4273058060435,
+    'n_trasacciones': 1465,
+    'FECHA': '2025-02-23'
+  },
+  {
+    'ID': 68,
+    'V_USD': 4899.6735278347305,
+    'V_BS': 310688.29840000015,
+    'V_CSH': 788.3111496609368,
+    'V_EFEC': 1996.1033086263994,
+    'n_trasacciones': 1094,
+    'FECHA': '2025-02-24'
+  },
+  {
+    'ID': 69,
+    'V_USD': 0,
+    'V_BS': 0,
+    'V_CSH': 0,
+    'V_EFEC': 0,
+    'n_trasacciones': 0,
+    'FECHA': '2025-02-25'
   }
 ]
 from datetime import datetime, timedelta
 
+fecha = datetime.now()
+mes_date = fecha.date().month
+mes_actual = f'{mes_date:02d}'
+
+
+def semanas_del_mes(año, mes):
+    semanas = calendar.monthcalendar(año, mes)
+    return semanas
+
+
+
+año = 2025
+mes = [1,2,3,4,5,6,7,8,9,10,11,12]
+
+semanas = []
+meses = []
+for i in mes:
+    meses.append(i)
+    count_semanas = semanas_del_mes(año,i)
+    semanas.append(count_semanas)
+
+
+def conat(a):
+    if str(mes_actual) == f'{meses[a]:02d}':
+        semanas_activas = semanas[a]
+    else:
+        semanas_activas = []
+    
+    return semanas_activas
+
+semanas_variadas = conat(int(mes_date) - 1)
+
+
+
 # Obtener la fecha actual y calcular el inicio y fin de la semana
-fecha_sistema = datetime.now().date()  # Fecha del día actual
-inicio_semana = fecha_sistema - timedelta(days=fecha_sistema.weekday())  # Lunes de la semana actual
-fin_semana = inicio_semana + timedelta(days=6)  # Domingo de la semana actual
+semanas = {semana: [] for semana in range(1, 6)}
 
-# Lista para el rango de fechas de la semana (de lunes a domingo)
-fechas_semana = [(inicio_semana + timedelta(days=i)).strftime("%Y-%m-%d") for i in range(7)]
+# Convertir las fechas de semanas_variadas en rangos de fechas
 
-# Inicializar ventas semanales con valores vacíos (uno por cada día de la semana)
-ventas_semanales = [None] * 7
+rango_semanas = [
+    (f'{año}-{mes_actual}-{min([d for d in semana if d > 0]):02d}', 
+     f'{año}-{mes_actual}-{max([d for d in semana if d > 0]):02d}')
+     
+    for semana in semanas_variadas if any(d > 0 for d in semana)
+]
 
-# Llenar las ventas semanales con los datos disponibles
-for registro in data:
-    fecha = registro['FECHA']
-    if fecha in fechas_semana:  # Solo considerar fechas dentro de la semana actual
-        indice_dia = fechas_semana.index(fecha)  # Obtener el índice correspondiente (lunes=0, martes=1, ...)
-        ventas_semanales[indice_dia] = registro['V_USD']  # Asignar el valor de ventas para ese día
 
-# Imprimir las fechas de la semana y las ventas para cada día
-print("Fechas de la semana:", fechas_semana)
-print("Ventas semanales:", ventas_semanales)
+    # Iterar sobre los datos en grafico_mensuales
+for j in data:
+        fecha_actual = j['FECHA']
 
+        # Comparar la fecha con los rangos de semanas
+        for i, (inicio, fin) in enumerate(rango_semanas, 1):
+            if inicio <= fecha_actual <= fin:
+                semanas[i].append((j['V_USD'], j['V_CSH'], j['V_BS'], j['V_EFEC']))
+                break  # Romper el bucle una vez que se encuentra la semana correspondiente
+
+# Crear listas para cada tipo de dato (USD, CSH, BS, EFEC) usando comprensión de listas
+usds_semanal = {semana: [response[0] for response in semanas[semana]] for semana in range(1, 6)}
+csh_semanal = {semana: [response[1] for response in semanas[semana]] for semana in range(1, 6)}
+bs_semanal = {semana: [response[2] for response in semanas[semana]] for semana in range(1, 6)}
+efe_semanal = {semana: [response[3] for response in semanas[semana]] for semana in range(1, 6)}
+
+    
+    #LISTA GRAFICO SEMANAL
+weekly_sales = [sum(usds_semanal[1]), sum(usds_semanal[2]), sum(usds_semanal[3]),sum(usds_semanal[4]),sum(usds_semanal[5])]
+
+suma_semanal_csh =[sum(csh_semanal[1]), sum(csh_semanal[2]),sum(csh_semanal[3]),sum(csh_semanal[4]),sum(csh_semanal[5])]
+suma_semanal_bs = [sum(bs_semanal[1]), sum(bs_semanal[2]),sum(bs_semanal[3]),sum(bs_semanal[4]),sum(bs_semanal[5])]
+suma_semanal_efectivo = [sum(efe_semanal[1]), sum(efe_semanal[2]),sum(efe_semanal[3]),sum(efe_semanal[4]),sum(efe_semanal[5])]
+
+
+print(weekly_sales)
