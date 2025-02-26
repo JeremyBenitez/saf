@@ -1,70 +1,909 @@
 {% extends "base.html" %}
 {% block content %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/tendencias.css') }}" />
+    <title>Departamentos - Aplicación Flask</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding: 30px 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Cabecera con efecto de gradiente */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2c3e50;
+            margin-top: 50px;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
 
-<div class="container-fluid py-4">
-  <!-- Título principal "Tendencias de Ventas" -->
-  <div class="row d-flex align-items-center">
-    <div class="col-md-5 mb-2">
-      <h2 class="fw-bold">Tendencias de Ventas</h2>
-    </div>
-    <form action="" method="post" class="col-md-7 mb-3 d-flex justify-content-end">
-      <div class="d-flex flex-column flex-md-row align-items-md-center">
-        <div class="mb-2">
-          <label for="startDate" class="form-label">Filtrar por fechas:&nbsp;&nbsp;</label>
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Contenedor de tarjetas de departamento */
+        .departments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        
+        /* Tarjetas de departamento */
+        .department-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            border: none;
+        }
+        
+        .department-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .department-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.8) 0%, rgba(41, 128, 185, 0.9) 100%);
+            opacity: 0.9;
+            z-index: 1;
+            border-radius: 16px;
+        }
+        
+        /* Contenido de la tarjeta */
+        .card-content {
+            position: relative;
+            z-index: 2;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+        
+        .department-icon {
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .department-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Contador de ventas */
+        .sales-count {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sales-count i {
+            margin-right: 8px;
+        }
+        
+        /* Personalización de colores para cada departamento */
+        #ac::before { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        #au::before { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        #be::before { background: linear-gradient(135deg, #e84393 0%, #d81b60 100%); }
+        #ci::before { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+        #co::before { background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%); }
+        #cp::before { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+        #cz::before { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); }
+        #dp::before { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
+        #fe::before { background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); }
+        #fr::before { background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%); }
+        #hg::before { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        #in::before { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        #jg::before { background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%); }
+        #of::before { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+        #pe::before { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+        #p::before { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); }
+        #rp::before { background: linear-gradient(135deg, #2980b9 0%, #3498db 100%); }
+        #tg::before { background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%); }
+        
+        /* Modal personalizado */
+        .modal-content {
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 1.5rem;
+        }
+        
+        .modal-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-footer {
+            border: none;
+            padding: 1.5rem;
+        }
+        
+        /* Tarjetas para tiendas en modal */
+        .store-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .store-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px);
+        }
+        
+        .store-card-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+        }
+        
+        .store-card-body {
+            padding: 1.5rem;
+        }
+        
+        .store-data {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .data-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .data-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 5px;
+        }
+        
+        .data-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .product-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .product-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Botones personalizados */
+        .btn-modal {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 30px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-close-modal {
+            background-color: #e9ecef;
+            color: #2c3e50;
+        }
+        
+        .btn-close-modal:hover {
+            background-color: #dee2e6;
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .department-card {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+        
+        /* Aplicar retardo a las tarjetas para efecto cascada */
+        .departments-grid .department-card:nth-child(1) { animation-delay: 0.1s; }
+        .departments-grid .department-card:nth-child(2) { animation-delay: 0.15s; }
+        .departments-grid .department-card:nth-child(3) { animation-delay: 0.2s; }
+        .departments-grid .department-card:nth-child(4) { animation-delay: 0.25s; }
+        .departments-grid .department-card:nth-child(5) { animation-delay: 0.3s; }
+        .departments-grid .department-card:nth-child(6) { animation-delay: 0.35s; }
+        .departments-grid .department-card:nth-child(7) { animation-delay: 0.4s; }
+        .departments-grid .department-card:nth-child(8) { animation-delay: 0.45s; }
+        .departments-grid .department-card:nth-child(9) { animation-delay: 0.5s; }
+        .departments-grid .department-card:nth-child(10) { animation-delay: 0.55s; }
+        .departments-grid .department-card:nth-child(11) { animation-delay: 0.6s; }
+        .departments-grid .department-card:nth-child(12) { animation-delay: 0.65s; }
+        .departments-grid .department-card:nth-child(13) { animation-delay: 0.7s; }
+        .departments-grid .department-card:nth-child(14) { animation-delay: 0.75s; }
+        .departments-grid .department-card:nth-child(15) { animation-delay: 0.8s; }
+        .departments-grid .department-card:nth-child(16) { animation-delay: 0.85s; }
+        .departments-grid .department-card:nth-child(17) { animation-delay: 0.9s; }
+        .departments-grid .department-card:nth-child(18) { animation-delay: 0.95s; }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .departments-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .departments-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2.4rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .departments-grid {
+                grid-template-columns: 1fr;
+                max-width: 320px;
+                margin: 0 auto;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            body {
+                padding: 1rem 0;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+        }
+
+        /* Estilos para el modal a pantalla completa */
+        .modal-fullscreen {
+            width: 100vw;
+            max-width: none;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .modal-fullscreen .modal-dialog {
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            margin: 0;
+        }
+
+        .modal-fullscreen .modal-content {
+            height: 100%;
+            border-radius: 0;
+            border: none;
+        }
+
+        /* Estilos para el cuerpo del modal */
+        .modal-body {
+            overflow-y: auto; /* Permitir scroll si el contenido es muy largo */
+            padding: 20px;
+        }
+
+        /* Estilos para las tarjetas de tiendas */
+        .store-card {
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .store-card-header {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .store-card-body {
+            padding: 1rem;
+        }
+
+        .store-card-body p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Estilos para el título del modal */
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Estilos para el botón de cerrar */
+        .btn-close-modal {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .btn-close-modal:hover {
+            background-color: #5a6268;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Departamentos</h1>
         </div>
-        <div class="d-flex flex-column flex-md-row gap-2">
-          <input type="date" class="form-control" id="startDate" name="startDate" value="{{ start_date }}">
-          <input type="date" class="form-control" id="endDate" name="endDate" value="{{ end_date }}">
-          <button class="btn btn-primary">Buscar</button>
+        
+        <div class="departments-grid">
+            <!-- Tarjeta de Accesorios -->
+            <div id="ac" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Accesorios">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-glasses department-icon"></i>
+                        <h3 class="department-name">Accesorios</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="AC"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Automotriz -->
+            <div id="au" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Automotriz">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-car department-icon"></i>
+                        <h3 class="department-name">Automotriz</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="AU"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Belleza -->
+            <div id="be" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Belleza">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-spa department-icon"></i>
+                        <h3 class="department-name">Belleza</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="BE"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Comercio Industrial -->
+            <div id="ci" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Comercio Industrial">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-industry department-icon"></i>
+                        <h3 class="department-name">Comercio Industrial</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="CI"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Comida -->
+            <div id="co" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Comida">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-utensils department-icon"></i>
+                        <h3 class="department-name">Comida</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="CO"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Cuidado Personal -->
+            <div id="cp" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Cuidado Personal">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-pump-soap department-icon"></i>
+                        <h3 class="department-name">Cuidado Personal</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="CP"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Calzado -->
+            <div id="cz" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Calzado">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-shoe-prints department-icon"></i>
+                        <h3 class="department-name">Calzado</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="CZ"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Deporte -->
+            <div id="dp" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Deporte">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-volleyball-ball department-icon"></i>
+                        <h3 class="department-name">Deporte</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="DP"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Festejo -->
+            <div id="fe" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Festejo">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-birthday-cake department-icon"></i>
+                        <h3 class="department-name">Festejo</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="FE"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Ferretería -->
+            <div id="fr" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Ferretería">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-tools department-icon"></i>
+                        <h3 class="department-name">Ferretería</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="FR"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Hogar -->
+            <div id="hg" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Hogar">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-home department-icon"></i>
+                        <h3 class="department-name">Hogar</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="HG"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Insumos -->
+            <div id="in" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Insumos">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-boxes department-icon"></i>
+                        <h3 class="department-name">Insumos</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="IN"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Juguetes -->
+            <div id="jg" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Juguetes">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-gamepad department-icon"></i>
+                        <h3 class="department-name">Juguetes</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="JG"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Oficina -->
+            <div id="of" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Oficina">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-briefcase department-icon"></i>
+                        <h3 class="department-name">Oficina</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="OF"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Perfume -->
+            <div id="pe" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Perfume">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-spray-can department-icon"></i>
+                        <h3 class="department-name">Perfume</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="PE"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Productos de Limpieza -->
+            <div id="p" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Productos de Limpieza">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-broom department-icon"></i>
+                        <h3 class="department-name">Productos de Limpieza</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="Pl"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Ropa -->
+            <div id="rp" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Ropa">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-tshirt department-icon"></i>
+                        <h3 class="department-name">Ropa</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="RP"></span></div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta de Tecnología -->
+            <div id="tg" class="department-card" data-bs-toggle="modal" data-bs-target="#departmentModal" data-department="Tecnología">
+                <div class="card-content">
+                    <div>
+                        <i class="fas fa-laptop department-icon"></i>
+                        <h3 class="department-name">Tecnología</h3>
+                    </div>
+                    <div class="sales-count"><i class="fas fa-chart-line"></i><span id="TG"></span></div>
+                </div>
+            </div>
         </div>
-      </div>
-    </form>
-  </div> 
-
-    <div class="departments-container">
-      <!-- Título de los departamentos -->
-      <div class="department-title">Departamento Más Vendido:</div>
-      <div class="department-title">Departamento Menos Vendido:</div>
-    </div>
-
-  <!-- Contenedor de las tarjetas de departamentos -->
-  <div class="departments-container">
-    <!-- Departamento Más Vendido -->
-    <div class="department-card velde">
-      <div id="bestDepartmentDetails">
-        <h2 id="bestDepartmentName"></h2>
-        <p><strong>Ventas Totales en USD: </strong></p>
-        <p><strong>Unidades Vendidas: </strong></p>
-
-      </div>
     </div>
     
-    <!-- Departamento Menos Vendido -->
-    <div class="department-card rojo">
-      <div id="worstDepartmentDetails">
-        <h2 id="worstDepartmentName"></h2>
-        <p><strong>Ventas Totales en USD: </strong></p>
-        <p><strong>Unidades Vendidas: </strong></p>
-      </div>
-    </div>
-  </div>
+    <!-- Modal Mejorado -->
+        <div class="modal fade modal-fullscreen" id="departmentModal" tabindex="-1" aria-labelledby="departmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="departmentModalLabel">Información del Departamento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Contenedor para las tarjetas de cada tienda -->
+                        <div id="modal-stores-container" class="row g-4">
+                            <!-- El contenido se generará dinámicamente con JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <!-- Sección del gráfico -->
-  <div class="row g-4 mb-4" style="justify-content: center;">
-    <div class="col-md-10">
-      <canvas id="salesChart"></canvas>
-    </div>
-  </div>
-</div>
+    <!-- Bootstrap JS y Popper.js (necesario para algunos componentes de Bootstrap) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Script para implementar interactividad -->
+	<script>
+        // Variable global para almacenar los datos de los departamentos
+            let departamentosData = null;
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            // Función para hacer la solicitud a la API y actualizar los contadores (una sola vez)
+            async function fetchSalesData() {
+                try {
+                    // Hacer la solicitud a la API
+                    const response = await fetch('http://10.21.5.23:5000/tendencias/api/cantidad');
+                                        
+                    // Verificar si la respuesta es exitosa
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los datos de la API');
+                    }
 
+                    // Convertir la respuesta a JSON
+                    const data = await response.json();
 
+                    // Depuración: Verificar los datos obtenidos
+                    console.log('Datos obtenidos de la API:', data);
 
-</script>
+                    // Verificar si la respuesta es una lista con un solo objeto
+                    if (Array.isArray(data) && data.length > 0) {
+                        const salesData = data[0]; // Obtener el primer (y único) objeto de la lista
+                        
+                        // Guardar los datos en la variable global
+                        departamentosData = salesData;
 
+                        // Iterar sobre las claves del objeto
+                        Object.keys(salesData).forEach(key => {
+                            // Buscar el span con el id correspondiente a la clave
+                            const salesCountSpan = document.getElementById(key);
+                            if (salesCountSpan) {
+                                // Actualizar el contenido del span con el total de ventas
+                                salesCountSpan.textContent = `${salesData[key].toLocaleString()} Unidades vendidas`;
+                            } else {
+                                console.warn(`No se encontró un span con el id: ${key}`);
+                            }
+                        });
+                    } else {
+                        console.error('La respuesta de la API no tiene el formato esperado');
+                    }
+                } catch (error) {
+                    console.error('Error al obtener los datos:', error);
+                    // Si hay un error, mostrar un mensaje de error en los spans
+                    document.querySelectorAll('.sales-count').forEach(span => {
+                        span.textContent = 'Error al cargar';
+                    });
+                }
+            }
+
+            // Función para ajustar el tamaño del span según el contenido
+            function adjustSpanSize() {
+                // Seleccionar todos los spans con la clase .sales-count
+                document.querySelectorAll('.sales-count').forEach(span => {
+                    // Calcular el ancho necesario en función del contenido
+                    const textWidth = span.scrollWidth; // Ancho del contenido
+                    const maxWidth = 350; // Ancho máximo permitido
+                    const minWidth = 200; // Ancho mínimo permitido
+
+                    // Ajustar el ancho del span
+                    if (textWidth > maxWidth) {
+                        span.style.width = `${maxWidth}px`; // Limitar al ancho máximo
+                    } else if (textWidth < minWidth) {
+                        span.style.width = `${minWidth}px`; // Limitar al ancho mínimo
+                    } else {
+                        span.style.width = `${textWidth}px`; // Ajustar al ancho del contenido
+                    }
+                });
+            }
+
+            // Función para cargar detalles del departamento (una sola petición por departamento)
+            function loadDepartmentData(departmentCode) {
+                // Verificar si ya tenemos datos en caché
+                if (window[`departmentDetails_${departmentCode}`]) {
+                    displayDepartmentDetails(departmentCode, window[`departmentDetails_${departmentCode}`]);
+                    return;
+                }
+                
+                // Si no hay datos en caché, hacer la petición
+                $.ajax({
+                    url: `http://10.21.5.23:5000/tendencias/detalles/${departmentCode}`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({}),
+                    success: function(response) {
+                        console.log('Datos recibidos:', response);
+                        
+                        // Guardar los datos en caché
+                        window[`departmentDetails_${departmentCode}`] = response;
+                        
+                        // Mostrar los datos
+                        displayDepartmentDetails(departmentCode, response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error al cargar los datos:', error);
+                        $('#modal-stores-container').html(`<div class="alert alert-danger">Error al cargar los datos: ${error}</div>`);
+                    }
+                });
+            }
+
+            // Función para mostrar los detalles del departamento en el modal
+            function displayDepartmentDetails(departmentCode, response) {
+                // Limpiar el contenedor de tiendas
+                $('#modal-stores-container').empty();
+                
+                // Verificar si hay datos de tiendas
+                if (response && response.valores_tiendas) {
+                    // Convertir el objeto de tiendas en un array
+                    const tiendas = Object.keys(response.valores_tiendas);
+
+                    // Ordenar las tiendas de mayor a menor según el total general vendido
+                    tiendas.sort((a, b) => {
+                        const cantidadA = response.valores_tiendas[a].cantidad || 0;
+                        const cantidadB = response.valores_tiendas[b].cantidad || 0;
+                        return cantidadB - cantidadA; // Orden descendente
+                    });
+
+                    // Iterar sobre cada tienda y crear una tarjeta para cada una
+                    tiendas.forEach(tienda => {
+                        const datosTienda = response.valores_tiendas[tienda];
+                        const productoMasVendido = datosTienda.producto_mas_vendido || {};
+                        
+                        // Crear una tarjeta para la tienda con los datos formateados
+                        const tiendaCard = `
+                            <div class="col-md-4">
+                                <div class="card mb-4 shadow-sm" style="margin: 10px;"> <!-- Añadimos margen externo -->
+                                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">${formatTiendaName(tienda)}</h5>
+                                        <i class="fas fa-store"></i> <!-- Icono de tienda -->
+                                    </div>
+                                    <div class="card-body p-4"> <!-- Añadimos padding interno -->
+                                        <div class="d-flex flex-column gap-3">
+                                            <!-- Total vendido (de todo el departamento) -->
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="fas fa-chart-bar text-primary"></i>
+                                                <div>
+                                                    <p class="mb-0 text-muted">Total vendido (departamento)</p>
+                                                    <p class="mb-0 fw-bold">${numberWithCommas(datosTienda.cantidad || 0)} unidades</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Artículo más vendido -->
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="fas fa-star text-warning"></i>
+                                                <div>
+                                                    <p class="mb-0 text-muted">Artículo más vendido</p>
+                                                    <p class="mb-0 fw-bold">${productoMasVendido.nombre || 'No disponible'}</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Código del producto -->
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="fas fa-barcode text-success"></i>
+                                                <div>
+                                                    <p class="mb-0 text-muted">Código del producto</p>
+                                                    <p class="mb-0 fw-bold">${productoMasVendido.codigo || 'No disponible'}</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Cantidad vendida (del producto más vendido) -->
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="fas fa-boxes text-info"></i>
+                                                <div>
+                                                    <p class="mb-0 text-muted">Cantidad vendida (artículo)</p>
+                                                    <p class="mb-0 fw-bold">${numberWithCommas(productoMasVendido.cantidad || 0)} unidades</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // Agregar la tarjeta al contenedor del modal
+                        $('#modal-stores-container').append(tiendaCard);
+                    });
+                } else {
+                    // Si no hay datos, mostrar un mensaje
+                    $('#modal-stores-container').html('<div class="alert alert-warning">No hay datos disponibles para este departamento.</div>');
+                }
+            }
+
+            // Función para formatear el nombre de la tienda (primera letra en mayúscula)
+            function formatTiendaName(name) {
+                return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+            }
+
+            // Función para formatear números con comas como separadores de miles
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            // Cuando el DOM esté listo
+            document.addEventListener('DOMContentLoaded', function() {
+                // Cargar los datos iniciales
+                fetchSalesData();
+                
+                // Ajustar el tamaño de los spans
+                adjustSpanSize();
+                
+                // Configurar el observador para ajustar los spans cuando cambie su contenido
+                const observer = new MutationObserver(adjustSpanSize);
+                document.querySelectorAll('.sales-count').forEach(span => {
+                    observer.observe(span, { childList: true, characterData: true });
+                });
+                
+                // Configurar el evento del modal
+                $('#departmentModal').on('show.bs.modal', function (event) {
+                    let button = $(event.relatedTarget); // Botón que activó el modal
+                    let department = button.data('department'); // Extraer el nombre del departamento
+                    let departmentId = button.attr('id'); // Obtener el ID del botón
+                    
+                    // Actualizar el título del modal
+                    let modal = $(this);
+                    modal.find('.modal-title').text('Departamento: ' + department);
+                    
+                    // Determinar el código del departamento
+                    let departmentCode;
+                    if (departmentId) {
+                        departmentCode = departmentId.toUpperCase();
+                    } else {
+                        // Si no hay un ID, usar la primera o las dos primeras letras del nombre del departamento
+                        const deptName = department || '';
+                        if (deptName.includes(' ')) {
+                            // Si hay un espacio, usar la primera letra de cada palabra
+                            departmentCode = deptName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+                        } else {
+                            // Si no hay espacio, usar las dos primeras letras
+                            departmentCode = deptName.substring(0, 2).toUpperCase();
+                        }
+                    }
+                    
+                    // Cargar los datos del departamento (solo una vez por departamento)
+                    loadDepartmentData(departmentCode);
+                });
+                
+                // Asignar eventos de clic a todos los botones de departamento
+                document.querySelectorAll('.btn-primary').forEach(button => {
+                    button.addEventListener('click', function() {
+                        // No es necesario hacer nada aquí, ya que el modal se encargará de todo
+                        // cuando se muestre
+                    });
+                });
+            });
+
+    </script>
+</body>
+</html>
 
 {% endblock %}
