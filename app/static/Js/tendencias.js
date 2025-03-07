@@ -332,10 +332,6 @@
                         }
                     }
                 
-                    // Si el departamento es "Festejo", asegúrate de que el ID tenga el espacio al final
-                    if (department === "fe ") {
-                        departmentCode = "fe "; // Asegúrate de que el ID tenga el espacio al final
-                    }
                 
                     // Cargar los datos del departamento solo si no se han cargado antes
                     if (!loadedDepartments[departmentCode]) {
@@ -351,17 +347,20 @@
                         loadDepartmentData(departmentCode);
                     });
                 });
+
+                $('#top20Modal').on('hidden.bs.modal', function () {
+                    // Elimina el backdrop específico del Top 20
+                    $('.modal-backdrop').remove();
+                    
+                    // Restablece el comportamiento de desplazamiento del body
+                    $('body').css({
+                        'overflow': 'auto',
+                        'padding-right': '0'
+                    });
+                });
             });
 
 
     
-            $('#top20Modal').on('hidden.bs.modal', function () {
-                // Elimina el backdrop específico del Top 20
-                $('.modal-backdrop').remove();
-            });
             
-            // Abre el modal
-            $('#openTop20Modal').on('click', function () {
-                $('#top20Modal').modal('show');
-            });
             

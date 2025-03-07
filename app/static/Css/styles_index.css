@@ -3,7 +3,7 @@
     font-family: Arial, sans-serif;
     font-size: 2.5em; /* Ajusta el tamaño según necesites */
     font-weight: bold;
-    background: linear-gradient(45deg, #008b23, #1E3A8A); /* Rojo oscuro a azul oscuro */
+    background: linear-gradient(45deg, #d51f2d, #28336c); /* Rojo oscuro a azul oscuro */
     background-clip: text;
     -webkit-background-clip: text; /* Compatibilidad con navegadores WebKit */
     color: transparent;

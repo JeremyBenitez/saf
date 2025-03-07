@@ -27,7 +27,7 @@ body {
 
 h1 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 800;
     color: #2c3e50;
     margin-top: 50px;
@@ -314,19 +314,25 @@ height: 160px; /* Reducir la altura en pantallas medianas */
 
 @media (max-width: 992px) {
 .department-card {
-height: 150px; /* Reducir la altura en tablets */
+height: 250px; /* Reducir la altura en tablets */
 }
 }
 
 @media (max-width: 768px) {
 .department-card {
-height: 140px; /* Reducir la altura en pantallas pequeñas */
+height: 1600px; /* Reducir la altura en pantallas pequeñas */
 }
+
+ .header h1 {
+        font-size: 1.8rem; /* Tamaño más pequeño para móviles */
+        margin: 10px 0; /* Menos margen */
+    }
+
 }
 
 @media (max-width: 576px) {
 .department-card {
-height: 130px; /* Reducir la altura en móviles */
+height: 170px; /* Reducir la altura en móviles */
 }
 }
 
