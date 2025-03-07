@@ -1,0 +1,470 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    padding: 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Cabecera con efecto de gradiente */
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-top: 50px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 3px;
+    background: linear-gradient(90deg, #3498db, #2c3e50);
+    border-radius: 2px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Contenedor de tarjetas de departamento */
+.departments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+/* Tarjetas de departamento */
+.department-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    border: none;
+}
+
+.department-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.department-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.8) 0%, rgba(41, 128, 185, 0.9) 100%);
+    opacity: 0.9;
+    z-index: 1;
+    border-radius: 16px;
+}
+
+/* Contenido de la tarjeta */
+.card-content {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    cursor: pointer;
+}
+
+.department-icon {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.department-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+/* Contador de ventas */
+.sales-count {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sales-count i {
+    margin-right: 8px;
+}
+
+/* Personalización de colores para cada departamento */
+#ac::before { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+#au::before { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+#be::before { background: linear-gradient(135deg, #e84393 0%, #d81b60 100%); }
+#ci::before { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+#co::before { background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%); }
+#cp::before { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+#cz::before { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); }
+#dp::before { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
+#fe::before { background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); }
+#fr::before { background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%); }
+#hg::before { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+#in::before { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+#jg::before { background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%); }
+#of::before { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+#pe::before { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+#p::before { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); }
+#rp::before { background: linear-gradient(135deg, #2980b9 0%, #3498db 100%); }
+#tg::before { background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%); }
+
+/* Modal personalizado */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    height: 800px;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+}
+
+.modal-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border: none;
+    padding: 1.5rem;
+}
+
+/* Tarjetas para tiendas en modal */
+.store-card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.store-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-5px);
+}
+
+.store-card-header {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+}
+
+.store-card-body {
+    padding: 1.5rem;
+}
+
+.store-data {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.data-item {
+    flex: 1;
+    min-width: 200px;
+}
+
+.data-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-top: 5px;
+}
+
+.data-label {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.product-info {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.product-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+/* Botones personalizados */
+.btn-modal {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 30px;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-close-modal {
+    background-color: #e9ecef;
+    color: #2c3e50;
+}
+
+.btn-close-modal:hover {
+    background-color: #dee2e6;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.department-card {
+    animation: fadeIn 0.5s ease forwards;
+    opacity: 0;
+}
+
+/* Aplicar retardo a las tarjetas para efecto cascada */
+.departments-grid .department-card:nth-child(1) { animation-delay: 0.1s; }
+.departments-grid .department-card:nth-child(2) { animation-delay: 0.15s; }
+.departments-grid .department-card:nth-child(3) { animation-delay: 0.2s; }
+.departments-grid .department-card:nth-child(4) { animation-delay: 0.25s; }
+.departments-grid .department-card:nth-child(5) { animation-delay: 0.3s; }
+.departments-grid .department-card:nth-child(6) { animation-delay: 0.35s; }
+.departments-grid .department-card:nth-child(7) { animation-delay: 0.4s; }
+.departments-grid .department-card:nth-child(8) { animation-delay: 0.45s; }
+.departments-grid .department-card:nth-child(9) { animation-delay: 0.5s; }
+.departments-grid .department-card:nth-child(10) { animation-delay: 0.55s; }
+.departments-grid .department-card:nth-child(11) { animation-delay: 0.6s; }
+.departments-grid .department-card:nth-child(12) { animation-delay: 0.65s; }
+.departments-grid .department-card:nth-child(13) { animation-delay: 0.7s; }
+.departments-grid .department-card:nth-child(14) { animation-delay: 0.75s; }
+.departments-grid .department-card:nth-child(15) { animation-delay: 0.8s; }
+.departments-grid .department-card:nth-child(16) { animation-delay: 0.85s; }
+.departments-grid .department-card:nth-child(17) { animation-delay: 0.9s; }
+.departments-grid .department-card:nth-child(18) { animation-delay: 0.95s; }
+
+
+
+/* Ajustes responsivos para las tarjetas */
+@media (max-width: 1200px) {
+.department-card {
+height: 160px; /* Reducir la altura en pantallas medianas */
+}
+}
+
+@media (max-width: 992px) {
+.department-card {
+height: 150px; /* Reducir la altura en tablets */
+}
+}
+
+@media (max-width: 768px) {
+.department-card {
+height: 140px; /* Reducir la altura en pantallas pequeñas */
+}
+}
+
+@media (max-width: 576px) {
+.department-card {
+height: 130px; /* Reducir la altura en móviles */
+}
+}
+
+/* Ajustes responsivos para el texto */
+.department-name {
+font-size: 1.4rem;
+font-weight: 600;
+color: white;
+margin-bottom: 0.5rem;
+}
+
+@media (max-width: 1200px) {
+.department-name {
+font-size: 1.3rem; /* Reducir el tamaño de fuente en pantallas grandes */
+}
+}
+
+@media (max-width: 992px) {
+.department-name {
+font-size: 1.2rem; /* Reducir el tamaño de fuente en tablets */
+}
+}
+
+@media (max-width: 768px) {
+.department-name {
+font-size: 1.1rem; /* Reducir el tamaño de fuente en pantallas pequeñas */
+}
+}
+
+@media (max-width: 576px) {
+.department-name {
+font-size: 1rem; /* Reducir el tamaño de fuente en móviles */
+}
+}
+
+/* Ajustes responsivos para el contenedor de tarjetas */
+.departments-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+gap: 1.5rem;
+justify-content: center;
+}
+
+@media (max-width: 1200px) {
+.departments-grid {
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* 3 tarjetas por línea en pantallas grandes */
+}
+}
+
+@media (max-width: 992px) {
+.departments-grid {
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 3 tarjetas por línea en tablets */
+}
+}
+
+@media (max-width: 768px) {
+.departments-grid {
+grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 2 tarjetas por línea en pantallas pequeñas */
+}
+}
+
+@media (max-width: 576px) {
+.departments-grid {
+grid-template-columns: 1fr; /* 1 tarjeta por línea en móviles */
+}
+}
+
+/* Estilos para la sección "Top de los 20 artículos más vendidos" */
+.top-section {
+cursor: pointer; /* Cursor pointer para indicar que es cliclable */
+padding: 8px 12px;
+border-radius: 8px;
+transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.top-section:hover {
+background: linear-gradient(135deg, #ffd700, #ff4500); /* Degradado de amarillo a rojo */
+color: white; /* Texto blanco para contrastar con el fondo */
+transform: translateY(-2px); /* Efecto de levitación */
+}
+
+.top-section i {
+color: #ff4500; /* Color rojo para el icono de fuego */
+transition: color 0.3s ease;
+}
+
+.top-section:hover i {
+color: white; /* Cambiar el color del icono a blanco en hover */
+}
+
+.top-section p {
+margin-bottom: 0; /* Eliminar margen inferior del párrafo */
+}
+
+/* Estilo personalizado para el header del modal Top 20 */
+#top20Modal .modal-header {
+background: linear-gradient(135deg, #ff4500, #ffd700); /* Degradado de rojo a amarillo */
+color: white; /* Texto en blanco */
+border-bottom: none; /* Eliminar el borde inferior */
+padding: 1.5rem; /* Ajustar el padding */
+}
+
+#top20Modal .modal-title {
+font-family: 'Montserrat', sans-serif;
+font-weight: 700;
+font-size: 1.5rem;
+text-transform: uppercase; /* Convertir el texto en mayúsculas */
+}
+
+/* Estilo para el cuerpo del modal Top 20 */
+#top20Modal .modal-body {
+max-height: 800px; /* Altura máxima */
+overflow-y: auto; /* Agregar scroll vertical si es necesario */
+padding: 1.5rem; /* Ajustar el padding */
+}
+
+/* Ajustar el tamaño del modal Top 20 */
+#top20Modal .modal-dialog {
+max-width: 900px; /* Ancho máximo del modal */
+margin: 1.75rem auto; /* Centrar el modal */
+}
+
+/* Estilo para el fondo oscuro del modal del Top 20 */
+#top20Modal .modal-backdrop {
+opacity: 0.8 !important; /* Aumenta la opacidad del fondo */
+z-index: 1055; /* Asegúrate de que el fondo esté por encima del modal anterior */
+}
+
+/* Asegúrate de que el modal del Top 20 tenga un z-index mayor */
+#top20Modal {
+z-index: 1060 !important; /* Mayor que el modal anterior */
+}
+
+/* Asegura que los backdrops se apilen correctamente */
+.modal-backdrop {
+z-index: 1040 !important; /* Fondo para departmentModal */
+}
+
+#top20Modal + .modal-backdrop {
+z-index: 1055 !important; /* Fondo oscuro específico para Top 20 */
+}

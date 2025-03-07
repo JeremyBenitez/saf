@@ -1,23 +1,26 @@
-        /* Contenedor que aplica el scroll */
+
+
         .table-container {
-            width: 100%; /* Ajusta el ancho del contenedor */
-            max-height: 300px; /* Altura máxima del contenedor */
-            overflow-y: auto; /* Habilita el scroll vertical */
-            border: 1px solid #ccc; /* Agrega un borde opcional */
-        }
-
-        /* Estilo básico de la tabla */
-        table {
-            width: 100%; /* La tabla ocupa todo el ancho del contenedor */
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
+            position: relative;
+            max-height: 500px; /* Puedes ajustarlo si es necesario */
+            overflow-y: auto;
+          }
+          .thead-fixed {
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            z-index: 10; /* Asegúrate de que el z-index sea lo suficientemente alto */
+          }  
+          #inventoryTable tr {
+            height: 50px; /* Ajusta este valor al tamaño deseado */
+            border-bottom: 1px solid #ddd; /* Línea para separar filas */
+          }
+          #inventoryTable td, #inventoryTable th {
+            padding: 10px; /* Ajusta el espacio interior */
             text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f4f4f4;
-        }
+            vertical-align: middle;
+          }  
+          /* Estilo para el texto de la tabla */
+          table {
+            font-size: 13px; /* Ajusta el tamaño de la fuente */
+          }

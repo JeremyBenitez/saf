@@ -1,5 +1,5 @@
 // Variable global para almacenar los datos de los departamentos
-let departamentosData = null;
+            let departamentosData = null;
 
             // Función para hacer la solicitud a la API y actualizar los contadores (una sola vez)
             async function fetchSalesData() {
@@ -75,19 +75,19 @@ let departamentosData = null;
                     displayDepartmentDetails(departmentCode, window[`departmentDetails_${departmentCode}`]);
                     return;
                 }
-                
+            
                 // Si no hay datos en caché, hacer la petición
                 $.ajax({
-                    url: `http://10.21.5.23:5000/tendencias/detalles/${departmentCode}`,
+                    url: `http://10.21.5.23:5000/tendencias/detalles/${encodeURIComponent(departmentCode)}`, // Usar encodeURIComponent para manejar espacios
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({}),
                     success: function(response) {
                         console.log('Datos recibidos:', response);
-                        
+            
                         // Guardar los datos en caché
                         window[`departmentDetails_${departmentCode}`] = response;
-                        
+            
                         // Mostrar los datos
                         displayDepartmentDetails(departmentCode, response);
                     },
@@ -166,7 +166,7 @@ let departamentosData = null;
                                             </div>
 
                                             <!-- Sección "Top de los 20 artículos más vendidos" -->
-                                            <div class="d-flex align-items-center gap-2 top-section" onclick="openTop20('${departmentCode}')">
+                                            <div class="d-flex align-items-center gap-2 top-section" onclick="openTop20('${departmentCode}', '${tienda}')">
                                                 <i class="fas fa-fire-alt text-danger"></i> <!-- Icono de fuego mejorado -->
                                                 <div>
                                                     <p class="mb-0 text-muted">Top 20 artículos más vendidos</p>
@@ -187,12 +187,103 @@ let departamentosData = null;
                 }
             }
 
-            // Función para manejar el clic en la sección "Top de los 20 artículos más vendidos"
-            function openTop20(departmentCode) {
-                alert(`Abriendo el Top 20 del departamento: ${departmentCode}`);
-                // Aquí puedes agregar la lógica para abrir un modal o redirigir a otra vista
-            }
+    
+            function openTop20(departmentCode, storeName) {
+                // Cerrar el modal de departamento si está abierto
+                const departmentModal = bootstrap.Modal.getInstance(document.getElementById('departmentModal'));
+                if (departmentModal) {
+                    departmentModal.hide();
+                }
+            
 
+                // Hacer la solicitud AJAX para obtener el Top 20
+                $.ajax({
+                    url: `http://10.21.5.23:5000/tendencias/api/top/${storeName}`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ "filtro": departmentCode }),
+                    success: function(response) {
+                        console.log('Respuesta completa de la API:', response);
+
+                        const tableBody = document.getElementById('top20TableBody');
+                        tableBody.innerHTML = ''; // Limpiar el contenido previo
+
+                        // Verificar si hay datos en la respuesta
+                        if (response) {
+                            // Iterar sobre cada tienda en la respuesta
+                            for (const tienda in response) {
+                                if (response.hasOwnProperty(tienda) && response[tienda].top_20_productos) {
+                                    const top20Data = response[tienda].top_20_productos;
+
+                                    // Agregar los productos de cada tienda a la tabla
+                                    top20Data.forEach((producto, index) => {
+                                        const cantidad = producto.cantidad || 0;
+                                        const codigo = producto.codigo || 'Sin código';
+                                        const nombre = producto.nombre || 'Sin nombre';
+
+                                        tableBody.innerHTML += `
+                                            <tr>
+                                                <th scope="row">${index + 1}</th>
+                                                <td>${nombre}</td>
+                                                <td>${codigo}</td>
+                                                <td>${numberWithCommas(cantidad)} unidades</td>
+                                            </tr>
+                                        `;
+                                    });
+                                }
+                            }
+
+                            // Si no hay productos, mostrar un mensaje
+                            if (tableBody.innerHTML === '') {
+                                tableBody.innerHTML = `
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            No hay datos disponibles para el Top 20 de este departamento en las tiendas.
+                                        </td>
+                                    </tr>
+                                `;
+                            }
+                        } else {
+                            tableBody.innerHTML = `
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        No hay datos disponibles para el Top 20 de este departamento en las tiendas.
+                                    </td>
+                                </tr>
+                            `;
+                        }
+
+                        // Mostrar el modal de Top 20
+                        const top20Modal = new bootstrap.Modal(document.getElementById('top20Modal'), {
+                            backdrop: true,
+                            keyboard: true
+                        });
+                        top20Modal.show();
+                    },
+                            error: function(xhr, status, error) {
+                                console.error('Error al cargar el Top 20:', error);
+                                const tableBody = document.getElementById('top20TableBody');
+                                tableBody.innerHTML = `
+                                    <tr>
+                                        <td colspan="4" class="text-center text-danger">
+                                            Error al cargar los datos. Por favor, intente nuevamente.
+                                            Detalles: ${error}
+                                        </td>
+                                    </tr>
+                                `;
+
+                                // Mostrar modal de error
+                                const top20Modal = new bootstrap.Modal(document.getElementById('top20Modal'), {
+                                    backdrop: true,
+                                    keyboard: true
+                                });
+                                top20Modal.show();
+                            }
+                        });
+            }
+            
+    
+            
             // Función para formatear el nombre de la tienda (primera letra en mayúscula)
             function formatTiendaName(name) {
                 return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -204,10 +295,9 @@ let departamentosData = null;
             }
 
             // Cuando el DOM esté listo
-            document.addEventListener('DOMContentLoaded', function() {
+           document.addEventListener('DOMContentLoaded', function() {
                 // Cargar los datos iniciales
-                fetchSalesData();
-                
+                fetchSalesData();                
                 // Ajustar el tamaño de los spans
                 adjustSpanSize();
                 
@@ -217,41 +307,61 @@ let departamentosData = null;
                     observer.observe(span, { childList: true, characterData: true });
                 });
                 
-                // Configurar el evento del modal
-                $('#departmentModal').on('show.bs.modal', function (event) {
+                // Crear un objeto para rastrear los departamentos cargados
+                const loadedDepartments = {};
+
+                $('#departmentModal').off('show.bs.modal').on('show.bs.modal', function (event) {
                     let button = $(event.relatedTarget); // Botón que activó el modal
                     let department = button.data('department'); // Extraer el nombre del departamento
                     let departmentId = button.attr('id'); // Obtener el ID del botón
-                    
+                
                     // Actualizar el título del modal
                     let modal = $(this);
                     modal.find('.modal-title').text('Departamento: ' + department);
-                    
+                
                     // Determinar el código del departamento
                     let departmentCode;
                     if (departmentId) {
                         departmentCode = departmentId.toUpperCase();
                     } else {
-                        // Si no hay un ID, usar la primera o las dos primeras letras del nombre del departamento
                         const deptName = department || '';
                         if (deptName.includes(' ')) {
-                            // Si hay un espacio, usar la primera letra de cada palabra
                             departmentCode = deptName.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
                         } else {
-                            // Si no hay espacio, usar las dos primeras letras
                             departmentCode = deptName.substring(0, 2).toUpperCase();
                         }
                     }
-                    
-                    // Cargar los datos del departamento (solo una vez por departamento)
-                    loadDepartmentData(departmentCode);
-                });
                 
-                // Asignar eventos de clic a todos los botones de departamento
-                document.querySelectorAll('.btn-primary').forEach(button => {
-                    button.addEventListener('click', function() {
-                        // No es necesario hacer nada aquí, ya que el modal se encargará de todo
-                        // cuando se muestre
+                    // Si el departamento es "Festejo", asegúrate de que el ID tenga el espacio al final
+                    if (department === "fe ") {
+                        departmentCode = "fe "; // Asegúrate de que el ID tenga el espacio al final
+                    }
+                
+                    // Cargar los datos del departamento solo si no se han cargado antes
+                    if (!loadedDepartments[departmentCode]) {
+                        loadDepartmentData(departmentCode);
+                        loadedDepartments[departmentCode] = true; // Marcar como cargado
+                    } else {
+                        console.log(`Datos ya cargados para el departamento: ${departmentCode}`);
+                    }
+                
+                    // Agregar un botón de recarga en el modal
+                    modal.find('.reload-button').off('click').on('click', function() {
+                        loadedDepartments[departmentCode] = false; // Permitir que se vuelva a cargar
+                        loadDepartmentData(departmentCode);
                     });
                 });
             });
+
+
+    
+            $('#top20Modal').on('hidden.bs.modal', function () {
+                // Elimina el backdrop específico del Top 20
+                $('.modal-backdrop').remove();
+            });
+            
+            // Abre el modal
+            $('#openTop20Modal').on('click', function () {
+                $('#top20Modal').modal('show');
+            });
+            
