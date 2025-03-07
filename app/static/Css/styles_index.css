@@ -1,0 +1,94 @@
+.title{
+    margin-left: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 2.5em; /* Ajusta el tamaño según necesites */
+    font-weight: bold;
+    background: linear-gradient(45deg, #008b23, #1E3A8A); /* Rojo oscuro a azul oscuro */
+    background-clip: text;
+    -webkit-background-clip: text; /* Compatibilidad con navegadores WebKit */
+    color: transparent;
+    text-align: center; /* Alinear texto al centro */
+  }
+  .alert-center {
+    background-color: #003366; /* Color de fondo llamativo */
+    color: #fff; /* Texto en blanco para destacar */
+    padding: 8px 15px; /* Espaciado dentro del contenedor */
+    border-radius: 5px; /* Sin esquinas redondeadas */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+    font-weight: bold; /* Texto en negrita */
+    font-size: 16px; /* Tamaño de fuente un poco más grande */
+    white-space: nowrap; /* Evita que el texto se divida en dos líneas */
+    min-width: 250px; /* Ancho mínimo para evitar que se haga demasiado pequeño */
+    max-width: 300px; /* Ancho máximo para evitar que se estire demasiado */
+  }
+  .time-display {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.2;
+  }
+  .time-display div:first-child {
+    font-weight: bold;
+    color: #555;
+  }
+  .time-display #timeDisplay {
+    font-size: 16px;
+    color: #007bff; /* Puedes elegir otro color si prefieres */
+    margin-top: 4px;
+  }
+  /* Media queries para dispositivos pequeños */
+  @media (max-width: 768px) {
+    #storesChart, #monthlyChart{
+      height: 300px;  /* Ajustar la altura en dispositivos móviles */
+    }
+    .chartjs-tooltip {
+      font-size: 5px;  /* Ajustar el tamaño de las herramientas emergentes */
+    }
+  }
+  /* Asegurarse de que las etiquetas en el eje X no se superpongan en pantallas pequeñas */
+  @media (max-width: 480px) {
+    .chartjs-tooltip {
+      font-size: 5px;  /* Reducir el tamaño de fuente para las herramientas emergentes */
+    }
+    .chartjs-legend {
+      font-size: 5px;  /* Reducir el tamaño de la leyenda en pantallas pequeñas */
+    }
+  }
+
+  @media (max-width: 360px) {
+    .time-display {
+      display: none; /* Oculta el contenedor */
+    }
+  }
+  
+  #lastReload {
+    width: 100%; /* Usa todo el ancho disponible */
+    max-width: 300px; /* Define un ancho máximo si es necesario */
+    box-sizing: border-box; /* Asegura que el padding no altere el ancho total */
+    overflow: hidden; /* Previene desbordamiento */
+    text-align: center; /* Centra el contenido */
+  }
+  /* From Uiverse.io by suda-code */ 
+button {
+padding: 12.5px 30px;
+border: 0;
+border-radius: 100px;
+background-color: #fb2b9d;
+color: #ffffff;
+font-weight: Bold;
+transition: all 0.5s;
+-webkit-transition: all 0.5s;
+}
+
+button:hover {
+background-color: #6fc5ff;
+box-shadow: 0 0 20px #6fc5ff50;
+transform: scale(1.1);
+}
+
+button:active {
+background-color: #3d94cf;
+transition: all 0.25s;
+-webkit-transition: all 0.25s;
+box-shadow: none;
+transform: scale(0.98);
+}
