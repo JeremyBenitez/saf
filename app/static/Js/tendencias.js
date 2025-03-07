@@ -331,12 +331,7 @@
                             departmentCode = deptName.substring(0, 2).toUpperCase();
                         }
                     }
-                
-                    // Si el departamento es "Festejo", asegúrate de que el ID tenga el espacio al final
-                    if (department === "fe ") {
-                        departmentCode = "fe "; // Asegúrate de que el ID tenga el espacio al final
-                    }
-                
+                                               
                     // Cargar los datos del departamento solo si no se han cargado antes
                     if (!loadedDepartments[departmentCode]) {
                         loadDepartmentData(departmentCode);
