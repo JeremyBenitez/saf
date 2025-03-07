@@ -3,7 +3,7 @@
     font-family: Arial, sans-serif;
     font-size: 2.5em; /* Ajusta el tamaño según necesites */
     font-weight: bold;
-    background: linear-gradient(45deg, #008b23, #1E3A8A); /* Rojo oscuro a azul oscuro */
+    background: linear-gradient(45deg, #00198b, #1E3A8A); /* Rojo oscuro a azul oscuro */
     background-clip: text;
     -webkit-background-clip: text; /* Compatibilidad con navegadores WebKit */
     color: transparent;
@@ -21,6 +21,7 @@
     min-width: 250px; /* Ancho mínimo para evitar que se haga demasiado pequeño */
     max-width: 300px; /* Ancho máximo para evitar que se estire demasiado */
   }
+
   .time-display {
     font-size: 14px;
     color: #333;
@@ -51,6 +52,11 @@
     }
     .chartjs-legend {
       font-size: 5px;  /* Reducir el tamaño de la leyenda en pantallas pequeñas */
+    }
+    .title{
+      font-size: 1rem;
+      line-height: 1.5;
+      margin: 2%;
     }
   }
 
