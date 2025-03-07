@@ -26,15 +26,17 @@
     </div>
   </div>  
   
-  <div class="alert alert-info d-flex justify-content-between align-items-center mb-4" role="alert">
-    <div>Tasa BCV: <span id="dollarBCV">{{tasa_dia}}</span> Bs/USD</div>
+  <div class="alert alert-info d-flex flex-column flex-md-row justify-content-between align-items-center mb-4" role="alert">
+    <div class="mb-2 mb-md-0">Tasa BCV: <span id="dollarBCV">{{tasa_dia}}</span> Bs/USD</div>
   
     <!-- Div central con estilo llamativo -->
-    <div class="alert-center text-center" style=>
+    <div class="alert-center text-center flex-grow-1 mx-2">
       Ventas del Día en General
     </div>
-    <div id="lastReload" class=""></div>
-  </div>  
+    
+    <div id="lastReload" class="text-end">Última actualización: <span id="lastReloadTime">{{last_reload_time}}</span></div>
+</div>
+ 
 
   <div class="row row-cols-1 row-cols-md-4 g-3 mb-4">
     <div class="col">
